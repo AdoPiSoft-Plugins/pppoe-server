@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-12">
+    <div
+      ba-panel
+      ba-panel-title="PPPOE Server"
+      ba-panel-class="with-scroll"
+      class="pppoe-server"
+      >
+      <form name='form'>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="interface">Select Interface to run PPPOE Server</label>
+              <select name="interface"
+                ng-change="updateSettings()"
+                ng-model="$parent.settings.interface"
+                ng-options="i.interface as i|interfaceName for i in $parent.interfaces"
+                class="form-control"
+                required></select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div
+      ba-panel
+      ba-panel-title="Clients"
+      ba-panel-class="with-scroll"
+      class="pppoe-clients"
+      >
+
+      <button class="btn btn-success btn-sm" ng-click="newClient()">
+        <i class="fa fa-plus">&nbsp;</i>
+        Add Client
+      </button>
+      <p></p>
+
+      <table class="table table-bordered">
+        <thead>
+          <th>Username</th>
+          <th>Password</th>
+          <th>Max Download</th>
+          <th>Max Upload</th>
+          <th>Data Usage</th>
+          <th>Expiration</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <tr ng-show="!$parent.clients.length">
+            <td colspan="5">
+              <center>- No records to show -</center>
+            </td>
+          </tr>
+          <tr ng-repeat="client in $parent.clients">
+            <td>{{client.username}}</td>
+            <td>{{client.password}}</td>
+            <td>{{client.max_download>0? client.max_download+"Kbps" : "Unlimited"}}</td>
+            <td>{{client.max_upload>0? client.max_upload+"Kbps" : "Unlimited"}}</td>
+            <td>{{client.data_usage | bytes:2}}</td>
+            <td>{{ {expire_minutes: client.expire_minutes, expiration_date: client.expiration_date} | expirationtext }}</td>
+            <td>
+              <button class="btn btn-success btn-sm" ng-click="editClient($index, client)">
+                <i class="fa fa-pen">&nbsp;</i>
+                Edit
+              </button>
+              <button class="btn btn-danger btn-sm" ng-click="deleteClient($index)">
+                <i class="fa fa-trash">&nbsp;</i>
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
