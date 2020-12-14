@@ -3,8 +3,8 @@
 var core = require('../../core')
 var config = require("../config.js")
 var clients = require("../clients.js")
-var shell = require('shelljs')
 var path = require('path')
+var cmd = require("../lib/cmd.js")
 var clients_manager = require("../services/clients-manager.js")
 
 exports.clients = async(req, res, next)=>{
@@ -31,7 +31,7 @@ exports.updateSettings = async(req, res, next)=>{
     var params = req.body
     await config.save(params)
     if(prev_cfg.interface != params.interface)
-      shell.exec(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`);
+      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`);
 
     res.json({})
   }catch(e){

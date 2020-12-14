@@ -13,7 +13,7 @@ module.exports = {
     var cfg = await config.read()
     var iface = cfg.interface
     if(iface)
-      shell.exec(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
+      await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
 
     await clients_manager.init()
   },
