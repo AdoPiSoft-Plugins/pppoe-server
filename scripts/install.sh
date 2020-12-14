@@ -1,6 +1,6 @@
 #!/bin/sh
 sudo apt-get install ppp -y
-ROOTPATH=/opt/adopisoft/plugins/pppoe-server/scripts
+ROOTPATH=/opt/adopisoft/plugins/pppoe-server
 cd $ROOTPATH/rp-pppoe-3.14/src/
 ./configure
 make
