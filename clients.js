@@ -45,6 +45,9 @@ exports.read = async()=>{
   var clients = (await ini.decode(txt) || {clients: {}}).clients || {}
   clients = Object.keys(clients).map(u => {
     var p = clients[u]
+    if(p.expiration_date){
+      p.expiration_date = new Date(p.expiration_date)
+    }
     return p
   })
   return clients || []
@@ -54,7 +57,10 @@ exports.updateChapSecrets = async()=>{
   var clients = await exports.read()
   var txt = ""
   clients.forEach(c=>{
-    txt += `${c.username}	*	${c.password}	${c.ip_address}\n`
+    var exp_date = c.expiration_date? new Date(c.expiration_date) : new Date()
+    var is_expired = exp_date.getTime() <= new Date().getTime()
+    if(!is_expired)
+      txt += `${c.username}	*	${c.password}	${c.ip_address}\n`
   })
   await writeFile(chap_secrets, txt).catch(console.log)
 }
@@ -70,10 +76,11 @@ exports.createClient = async(cfg)=>{
 
   var i = 0
   var _ip_ = await startIP()
-  while(!cfg.ip_address && i <= 1000){
+  while(!cfg.ip_address && i <= 9999){
     var exists = clients.findIndex(c=> c.ip_address == _ip_)
     if(exists >= 0 || _ip_ == await endIP()){
       _ip_ = IP.parse(_ip_).offset(1).toString()
+      i++
       continue
     }
     cfg.ip_address = _ip_

@@ -3,12 +3,17 @@
   var App = angular.module('Plugins')
   App.controller('PPPOEServerCtrl', function($scope, PPPOEService, Interfaces, $uibModal, toastr){
     $scope.loadClients = function(){
-      PPPOEService.clients().then(function(resp){
+      return PPPOEService.clients().then(function(resp){
         var clients = resp.data || []
+        console.log(clients)
         clients.forEach(function(c){
           c.expire_minutes = parseInt(c.expire_minutes)
           c.max_download = parseInt(c.max_download)
           c.max_upload = parseInt(c.max_upload)
+          if(c.expiration_date){
+            c.expiration_date = new Date(c.expiration_date)
+            c.is_expired = c.expiration_date.getTime() <= new Date().getTime()
+          }
           return c
         })
         $scope.clients = clients
@@ -17,7 +22,7 @@
     $scope.loadClients()
 
     PPPOEService.settings().then(function(resp){
-      $scope.settings = resp.data || []
+      $scope.settings = resp.data || {}
       Interfaces.all().then(function(res) {
         var list = res.data || []
         $scope.interfaces = list.filter(function(d){
@@ -25,6 +30,11 @@
           d.info = d.info || {}
           return d.config.enable_bandwidth_limiter || d.config.captiveportal && !d.info.bridged
         })
+        var wan_iface = list.find(function(i){
+          return i.config.type == 'wan'
+        }) || {interface: "eth0"}
+
+        $scope.settings.wan_iface = wan_iface.interface
       })
     })
 
@@ -48,13 +58,14 @@
             valid_time: false
           }
 
-          if(params.client){
-            var client = params.client
+          var client = params.client
+          if(client){
             $scope.username = client.username
             $scope.password = client.password
             $scope.max_download = client.max_download
             $scope.max_upload = client.max_upload
             $scope.expire_minutes = client.expire_minutes
+            $scope.expiration_date = client.expiration_date
             if($scope.expire_minutes >= 1440){
               var days = ($scope.expire_minutes/60)/24
               if (days % 1 == 0){
@@ -90,7 +101,7 @@
               password: $scope.password,
               max_download: $scope.max_download,
               max_upload: $scope.max_upload,
-              expire_minutes: $scope.expire_minutes
+              expire_minutes: $scope.expire_minutes,
             }
             PPPOEService.createClient(client).then(function(){
               toastr.success("PPPOE Client successfully created")
@@ -102,13 +113,12 @@
 
           $scope.updateClient = function(){
             $scope.submitting = true
-            var client = {
-              username: $scope.username,
-              password: $scope.password,
-              max_download: $scope.max_download,
-              max_upload: $scope.max_upload,
-              expire_minutes: $scope.expire_minutes
-            }
+            client.username = $scope.username
+            client.password = $scope.password
+            client.max_download = $scope.max_download
+            client.max_upload = $scope.max_upload
+            client.expire_minutes = !$scope.expiration_date? $scope.expire_minutes : 0
+
             PPPOEService.updateClient(params.index, client).then(function(){
               toastr.success("PPPOE Client successfully updated")
               $uibModalInstance.close();

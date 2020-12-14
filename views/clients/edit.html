@@ -34,28 +34,35 @@
       <span class="help-block" ng-if="form.max_upload.$error.min">Minimum is 1</span>
     </div>
 
-    <div ng-class="{'has-error' : form.no_expiry.$invalid}">
-      <div class="checkbox">
-        <label class="custom-checkbox">
-          <input type="checkbox" name="no_expiry" ng-model="no_expiration">
-          <span>
-            No Expiration
-          </span>
-        </label>
-      </div>
+    <div ng-show="expiration_date">
+      <label>Expiration:</label>
+      <input type="text" readonly value="{{expiration_date | date:'short'}}">
     </div>
 
-    <div class="form-group" ng-class="{'has-error' : form.expire_hours.$invalid}" ng-if="!no_expiration" ng-init="recomputeExpiration()" >
-      <label>Expiration</label>
-      <div class="row">
-        <div class="col-md-6">
-          <input class="form-control" type="number" name="expire_hours" min="1" ng-model="opts.expire_hours" ng-change="recomputeExpiration()" required>
-        </div>
-        <div class="col-md-6">
-          <select class="form-control" ng-model="opts.expiration_unit" ng-change="recomputeExpiration()" ng-options="u for u in opts.expiration_units" required></select>
+    <div ng-if="!expiration_date">
+      <div ng-class="{'has-error' : form.no_expiry.$invalid}">
+        <div class="checkbox">
+          <label class="custom-checkbox">
+            <input type="checkbox" name="no_expiry" ng-model="no_expiration">
+            <span>
+              No Expiration
+            </span>
+          </label>
         </div>
       </div>
-      <span class="help-block" ng-show="form.expire_hours.$error.min">Minimum is 1</span>
+  
+      <div class="form-group" ng-class="{'has-error' : form.expire_hours.$invalid}" ng-if="!no_expiration" ng-init="recomputeExpiration()" >
+        <label>Expiration</label>
+        <div class="row">
+          <div class="col-md-6">
+            <input class="form-control" type="number" name="expire_hours" min="1" ng-model="opts.expire_hours" ng-change="recomputeExpiration()" required>
+          </div>
+          <div class="col-md-6">
+            <select class="form-control" ng-model="opts.expiration_unit" ng-change="recomputeExpiration()" ng-options="u for u in opts.expiration_units" required></select>
+          </div>
+        </div>
+        <span class="help-block" ng-show="form.expire_hours.$error.min">Minimum is 1</span>
+      </div>
     </div>
   </div>
 

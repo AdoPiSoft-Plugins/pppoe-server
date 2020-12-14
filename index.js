@@ -3,23 +3,28 @@ var { app } = require('../core')
 var router = require("./router")
 var shell = require('shelljs')
 var path = require("path")
+var config = require("./config")
+var clients_manager = require("./services/clients-manager.js")
 
 module.exports = {
   async init(id){
     app.use(router)
+    var cfg = await config.read()
+    var iface = cfg.interface
+    if(iface)
+      shell.exec(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
+
+    await clients_manager.init()
   },
 
   async install(){
-    // shell.exec("sudo apt install adb -y")
-    // shell.cp("-r", credentials, "/root/")
-    // shell.cp(script, "/usr/bin/natfixer");
-    // shell.chmod("755", "/usr/bin/natfixer")
-    // shell.exec(`grep '/usr/bin/natfixer' /var/spool/cron/crontabs/root || echo "*/30 * * * * /usr/bin/natfixer" | tee -a /var/spool/cron/crontabs/root`)
-    // shell.exec(`sudo chmod 600 /var/spool/cron/crontabs/root`)
+    shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/install.sh")}`)
+    shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/uninstall.sh")}`)
+    shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/start.sh")}`)
+    shell.exec(path.join(__dirname, "scripts/install.sh"))
   },
 
   async uninstall(){
-    // shell.exec("sudo apt remove adb -y")
-    // shell.exec("sed -i '/natfixer/d' /var/spool/cron/crontabs/root")
+    shell.exec(path.join(__dirname, "scripts/uninstall.sh"))
   }
 }

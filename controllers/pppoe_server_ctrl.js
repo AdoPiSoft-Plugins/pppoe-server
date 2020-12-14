@@ -3,6 +3,9 @@
 var core = require('../../core')
 var config = require("../config.js")
 var clients = require("../clients.js")
+var shell = require('shelljs')
+var path = require('path')
+var clients_manager = require("../services/clients-manager.js")
 
 exports.clients = async(req, res, next)=>{
   try{
@@ -24,8 +27,12 @@ exports.settings = async(req, res, next)=>{
 
 exports.updateSettings = async(req, res, next)=>{
   try{
+    var prev_cfg = await config.read()
     var params = req.body
     await config.save(params)
+    if(prev_cfg.interface != params.interface)
+      shell.exec(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`);
+
     res.json({})
   }catch(e){
     next(e)
@@ -64,3 +71,22 @@ exports.deleteClient = async(req, res, next)=>{
   }
 }
 
+exports.onConnected = async(req, res, next)=>{
+  try{
+    var {ip, iface} = req.query || {}
+    await clients_manager.onConnected({ip, iface})
+    res.json({})
+  }catch(e){
+    next(e)
+  }
+}
+
+exports.onDisconnected = async(req, res, next)=>{
+  try{
+    var {ip, iface} = req.query || {}
+    await clients_manager.onDisconnected({ip, iface})
+    res.json({})
+  }catch(e){
+    next(e)
+  }
+}
