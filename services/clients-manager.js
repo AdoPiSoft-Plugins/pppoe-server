@@ -44,8 +44,8 @@ exports.connect = async({ip, iface})=>{
   }
   list.push({index, client})
   var {wan_iface} = await config.read()
-  await cmd(`${path.join(__dirname, "..", "scripts", "connect.sh")} ${iface} ${wan_iface} ${client.max_download||0} ${client.max_upload||0}`)
   await clients.updateClient(index, client)
+  await cmd(`${path.join(__dirname, "..", "scripts", "connect.sh")} ${iface} ${wan_iface} ${client.max_download||0} ${client.max_upload||0}`).catch(console.log)
 }
 
 exports.disconnect = async({ip, iface})=>{
@@ -56,6 +56,6 @@ exports.disconnect = async({ip, iface})=>{
   client.status = DISCONNECTED
   list.splice(list.findIndex(l=> l.index == index), 1)
   var {wan_iface} = await config.read()
-  await cmd(`${path.join(__dirname, "..", "scripts", "disconnect.sh")} ${iface} ${wan_iface}`)
   await clients.updateClient(index, client)
+  await cmd(`${path.join(__dirname, "..", "scripts", "disconnect.sh")} ${iface} ${wan_iface}`).catch(console.log)
 }
