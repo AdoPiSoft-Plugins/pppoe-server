@@ -41,13 +41,15 @@ exports.connect = async({ip, iface})=>{
   if(client.expire_minutes > 0){
     client.expiration_date = new Date(new Date().getTime() + client.expire_minutes*60000)
     client.expire_minutes = 0
-    client.started_at = new Date()
   }else{
     var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
     is_valid = is_valid || (!client.expiration_date && !client.expire_minutes) // no exp
     if(!is_valid)
       return exports.disconnect({ip, iface})
   }
+  if(!client.started_at)
+    client.started_at = new Date()
+
   list.push({index, client})
   var {wan_iface} = await config.read()
   console.log("CLIENT:", client)
