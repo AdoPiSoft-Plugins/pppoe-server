@@ -33,10 +33,10 @@ exports.connect = async({ip, iface})=>{
   client.iface = iface
   if(client.expire_minutes > 0){
     var prev_exp_date = client.expiration_date
-    client.expiration_date = (new Date(new Date().getTime() + client.expire_minutes*60000)).toISOString();
+    client.expiration_date = new Date(new Date().getTime() + client.expire_minutes*60000)
     client.expire_minutes = 0
     if(!prev_exp_date)
-      client.started_at = new Date().toISOString()
+      client.started_at = new Date()
   }else{
     var exp_date = client.expiration_date? new Date(client.expiration_date) : new Date()
     var is_expired = exp_date.getTime() <= new Date().getTime()

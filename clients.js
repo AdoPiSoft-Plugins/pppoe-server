@@ -103,6 +103,11 @@ exports.updateClient = async(index, cfg)=>{
   var indx = clients.findIndex(c=> c.username == cfg.username)
   if(indx >= 0 && indx != index) throw new Error('Username already exists')
 
+  if(cfg.expiration_date instanceof(Date))
+    cfg.expiration_date = cfg.expiration_date.toISOString();
+  if(cfg.started_at instanceof(Date))
+    cfg.started_at = cfg.started_at.toISOString();
+
   clients[index] = cfg
   clients = arrayToObj(clients)
 
