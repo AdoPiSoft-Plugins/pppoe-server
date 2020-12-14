@@ -77,6 +77,7 @@ exports.onConnected = async(req, res, next)=>{
     await clients_manager.connect({ip, iface})
     res.json({})
   }catch(e){
+    console.log(e)
     next(e)
   }
 }
@@ -87,6 +88,7 @@ exports.onDisconnected = async(req, res, next)=>{
     await clients_manager.disconnect({ip, iface})
     res.json({})
   }catch(e){
+    console.log(e)
     next(e)
   }
 }
