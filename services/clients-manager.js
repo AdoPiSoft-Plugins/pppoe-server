@@ -9,7 +9,7 @@ var DISCONNECTED = 'disconnected'
 var TICK_INTERVAL = 6e4 //1m
 var list = []
 
-exports.init = ()=>{
+exports.init = async()=>{
   setInterval(async() => {
     await promiseSeries(list.map(client=>{
       return async()=>{
@@ -21,6 +21,7 @@ exports.init = ()=>{
       }
     }))
   }, TICK_INTERVAL);
+  await clients.updateChapSecrets()
 }
 
 exports.connect = async({ip, iface})=>{

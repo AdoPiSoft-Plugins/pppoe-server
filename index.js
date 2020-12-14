@@ -12,10 +12,10 @@ module.exports = {
     app.use(router)
     var cfg = await config.read()
     var iface = cfg.interface
+    await clients_manager.init()
     if(iface)
       await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
 
-    await clients_manager.init()
   },
 
   async install(){
