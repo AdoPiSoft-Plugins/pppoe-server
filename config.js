@@ -16,8 +16,8 @@ exports.startServer = async()=>{
   try{
     var cfg = await exports.read()
     if(!cfg.interface) throw new Error("Interface not yet setup")
-    await cmd(`${path.join(__dirname, "scripts/start.sh")} ${cfg.interface}`)
     exports.server_started = true
+    await cmd(`${path.join(__dirname, "scripts/start.sh")} ${cfg.interface}`)
   }catch(e){
     console.log("ERROR Starting PPPOE Server", e)
   }

@@ -6,7 +6,6 @@
       $scope.loading = true
       return PPPOEService.clients().then(function(resp){
         var clients = resp.data || []
-        console.log(clients)
         clients.forEach(function(c){
           c.expire_minutes = parseInt(c.expire_minutes)
           c.max_download = parseInt(c.max_download)
