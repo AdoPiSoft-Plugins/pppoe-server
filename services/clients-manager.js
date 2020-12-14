@@ -38,7 +38,7 @@ exports.connect = async({ip, iface})=>{
     if(!prev_exp_date)
       client.started_at = new Date()
   }else{
-    var exp_date = c.expiration_date? new Date(c.expiration_date) : new Date()
+    var exp_date = client.expiration_date? new Date(client.expiration_date) : new Date()
     var is_expired = exp_date.getTime() <= new Date().getTime()
     if(is_expired)
       return exports.disconnect({ip, iface})
