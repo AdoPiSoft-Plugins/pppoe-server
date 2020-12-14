@@ -10,6 +10,7 @@
           c.expire_minutes = parseInt(c.expire_minutes)
           c.max_download = parseInt(c.max_download)
           c.max_upload = parseInt(c.max_upload)
+          delete c.is_expired
           if(c.expiration_date){
             c.expiration_date = new Date(c.expiration_date)
             c.is_expired = c.expiration_date.getTime() <= new Date().getTime()
