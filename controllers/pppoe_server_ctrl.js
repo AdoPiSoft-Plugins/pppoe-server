@@ -78,6 +78,7 @@ exports.deleteClient = async(req, res, next)=>{
 exports.onConnected = async(req, res, next)=>{
   try{
     var {ip, iface} = req.query || {}
+    console.log("ONCONNECTED:", {ip, iface})
     await clients_manager.connect({ip, iface})
     res.json({})
   }catch(e){
@@ -89,6 +90,7 @@ exports.onConnected = async(req, res, next)=>{
 exports.onDisconnected = async(req, res, next)=>{
   try{
     var {ip, iface} = req.query || {}
+    console.log("ONDISCONNECTED:", {ip, iface})
     await clients_manager.disconnect({ip, iface})
     res.json({})
   }catch(e){
