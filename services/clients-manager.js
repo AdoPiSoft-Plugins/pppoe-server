@@ -13,15 +13,21 @@ exports.init = async()=>{
   setInterval(async() => {
     await promiseSeries(list.map(({index, client})=>{
       return async()=>{
-        var exp_date = client.expiration_date || new Date()
-        var is_expired = exp_date.getTime() <= new Date().getTime()
-        if(is_expired){
+        var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
+        if(!is_valid){
           await exports.disconnect({ip: client.ip, iface: client.iface})
         }
       }
     }))
   }, TICK_INTERVAL);
-  await clients.updateChapSecrets()
+
+  var all = await clients.read()
+  await promiseSeries(all.map((c, i)=>{
+    return async()=>{
+      c.status = DISCONNECTED
+      await clients.updateClient(i, c)
+    }
+  }))
 }
 
 exports.connect = async({ip, iface})=>{
@@ -32,15 +38,12 @@ exports.connect = async({ip, iface})=>{
   client.status = CONNECTED
   client.iface = iface
   if(client.expire_minutes > 0){
-    var prev_exp_date = client.expiration_date
     client.expiration_date = new Date(new Date().getTime() + client.expire_minutes*60000)
     client.expire_minutes = 0
-    if(!prev_exp_date)
-      client.started_at = new Date()
+    client.started_at = new Date()
   }else{
-    var exp_date = client.expiration_date? new Date(client.expiration_date) : new Date()
-    var is_expired = exp_date.getTime() <= new Date().getTime()
-    if(is_expired)
+    var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
+    if(!is_valid)
       return exports.disconnect({ip, iface})
   }
   list.push({index, client})
