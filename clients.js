@@ -50,6 +50,7 @@ exports.read = async()=>{
     }
     if(p.started_at)
       p.started_at = new Date(p.started_at)
+    p.expire_minutes = parseInt(p.expire_minutes)
 
     return p
   })
