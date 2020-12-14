@@ -5,6 +5,7 @@ var shell = require('shelljs')
 var path = require("path")
 var config = require("./config")
 var clients_manager = require("./services/clients-manager.js")
+var cmd = require("./lib/cmd.js")
 
 module.exports = {
   async init(id){
@@ -21,10 +22,10 @@ module.exports = {
     shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/install.sh")}`)
     shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/uninstall.sh")}`)
     shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/start.sh")}`)
-    shell.exec(path.join(__dirname, "scripts/install.sh"))
+    await cmd(path.join(__dirname, "scripts/install.sh"))
   },
 
   async uninstall(){
-    shell.exec(path.join(__dirname, "scripts/uninstall.sh"))
+    await cmd(path.join(__dirname, "scripts/uninstall.sh"))
   }
 }
