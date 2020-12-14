@@ -52,7 +52,7 @@ exports.connect = async({ip, iface})=>{
 exports.disconnect = async({ip, iface})=>{
   var all = await clients.read()
   var index = all.findIndex(c=> c.ip_address == ip)
-  var client = list[index]
+  var client = all[index]
   if (!client) return
   client.status = DISCONNECTED
   list.splice(list.findIndex(l=> l.index == index), 1)
