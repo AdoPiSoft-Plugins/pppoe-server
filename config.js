@@ -6,6 +6,7 @@ var read_file = util.promisify(fs.readFile)
 var write_text = util.promisify(fs.writeFile)
 var chmod = util.promisify(fs.chmod)
 var path = require("path")
+var cmd = require("./lib/cmd.js")
 var ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/var", "cache", "pppoe-config.ini")
 var mode = 0o666
 
