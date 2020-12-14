@@ -15,7 +15,7 @@ module.exports = {
     await clients_manager.init()
     setTimeout(async()=>{
       await config.startServer()
-    }, 3e5) //5m
+    }, 18e4) //3m
 
   },
 
