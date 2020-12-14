@@ -13,7 +13,7 @@ exports.server_started = false
 exports.startServer = async()=>{
   if(exports.server_started) return
   try{
-    var cfg = exports.read()
+    var cfg = await exports.read()
     if(!cfg.interface) throw new Error("Interface not yet setup")
     await cmd(`${path.join(__dirname, "scripts/start.sh")} ${cfg.interface}`)
     exports.server_started = true
