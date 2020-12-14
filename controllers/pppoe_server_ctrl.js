@@ -20,7 +20,7 @@ exports.settings = async(req, res, next)=>{
   try{
     var cfg = await config.read()
     if(!config.server_started){
-      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${config.interface}`);
+      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${config.interface}`).catch(console.log);
       config.server_started = true
     }
     res.json(cfg)
@@ -35,7 +35,7 @@ exports.updateSettings = async(req, res, next)=>{
     var params = req.body
     await config.save(params)
     if(prev_cfg.interface != params.interface)
-      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`);
+      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`).catch(console.log);
 
     res.json({})
   }catch(e){

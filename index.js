@@ -16,7 +16,7 @@ module.exports = {
     setTimeout(async()=>{
       if(iface && !config.server_started){
         config.server_started = true
-        await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
+        await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`).catch(console.log)
       }
     }, 3e5) //5m
 
