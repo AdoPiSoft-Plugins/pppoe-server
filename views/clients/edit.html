@@ -39,7 +39,7 @@
       <input type="text" readonly value="{{expiration_date | date:'short'}}">
     </div>
 
-    <div ng-if="!expiration_date">
+    <div ng-hide="expiration_date">
       <div ng-class="{'has-error' : form.no_expiry.$invalid}">
         <div class="checkbox">
           <label class="custom-checkbox">
@@ -51,7 +51,7 @@
         </div>
       </div>
   
-      <div class="form-group" ng-class="{'has-error' : form.expire_hours.$invalid}" ng-if="!no_expiration" ng-init="recomputeExpiration()" >
+      <div class="form-group" ng-class="{'has-error' : form.expire_hours.$invalid}" ng-hide="no_expiration" ng-init="recomputeExpiration()" >
         <label>Expiration</label>
         <div class="row">
           <div class="col-md-6">
