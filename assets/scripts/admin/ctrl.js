@@ -3,6 +3,7 @@
   var App = angular.module('Plugins')
   App.controller('PPPOEServerCtrl', function($scope, PPPOEService, Interfaces, $uibModal, toastr){
     $scope.loadClients = function(){
+      $scope.loading = true
       return PPPOEService.clients().then(function(resp){
         var clients = resp.data || []
         console.log(clients)
@@ -20,6 +21,8 @@
           return c
         })
         $scope.clients = clients
+      }).finally(function(){
+        $scope.loading = false
       })
     }
     $scope.loadClients()

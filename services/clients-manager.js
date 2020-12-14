@@ -11,7 +11,7 @@ var list = []
 
 exports.init = async()=>{
   setInterval(async() => {
-    await promiseSeries(list.map(client=>{
+    await promiseSeries(list.map(({index, client})=>{
       return async()=>{
         var exp_date = client.expiration_date || new Date()
         var is_expired = exp_date.getTime() <= new Date().getTime()
