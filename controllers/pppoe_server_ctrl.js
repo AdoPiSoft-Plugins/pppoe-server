@@ -56,6 +56,13 @@ exports.updateClient = async(req, res, next)=>{
     var {index} = req.params
     var client = req.body
     await clients.updateClient(index, client)
+    if(client.status == 'connected'){
+      try{
+        await clients_manager.connect({ip: client.ip_address, iface: client.iface})
+      }catch(e){
+        console.log("FAILED TO APPLY CLIENT SETTINGS:", e)
+      }
+    }
     res.json(client)
   }catch(e){
     next(e)
