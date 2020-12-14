@@ -13,8 +13,12 @@ module.exports = {
     var cfg = await config.read()
     var iface = cfg.interface
     await clients_manager.init()
-    if(iface)
-      await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
+    setTimeout(async()=>{
+      if(iface && !config.server_started){
+        config.server_started = true
+        await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`)
+      }
+    }, 3e5) //5m
 
   },
 

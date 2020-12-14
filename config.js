@@ -9,6 +9,7 @@ var path = require("path")
 var ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/var", "cache", "pppoe-config.ini")
 var mode = 0o666
 
+exports.server_started = false
 exports.read = async()=>{
   return read_file(ini_file, 'utf8').then(txt => {
     return ini.decode(txt||"") || {}

@@ -19,6 +19,10 @@ exports.clients = async(req, res, next)=>{
 exports.settings = async(req, res, next)=>{
   try{
     var cfg = await config.read()
+    if(!config.server_started){
+      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`);
+      config.server_started = true
+    }
     res.json(cfg)
   }catch(e){
     next(e)
