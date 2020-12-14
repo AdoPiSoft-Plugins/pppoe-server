@@ -75,7 +75,8 @@
               <center>{{client.started_at? (client.started_at | date:'short') : '-'}}</center>
             </td>
             <td>
-              <span ng-class="{'text-danger': client.is_expired}">
+              <span ng-show="!client.expire_minutes && !client.expiration_date">N/A</span>
+              <span ng-show="client.expire_minutes || client.expiration_date" ng-class="{'text-danger': client.is_expired}">
                 {{ {expire_minutes: client.expire_minutes, expiration_date: client.expiration_date} | expirationtext }}
                 <sup ng-show="client.is_expired">expired</sup>
               </span>

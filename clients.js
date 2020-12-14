@@ -61,6 +61,7 @@ exports.updateChapSecrets = async()=>{
   var txt = ""
   clients.forEach(c=>{
     var is_valid = (c.expiration_date instanceof(Date)) ? c.expiration_date.getTime() > new Date().getTime() : c.expire_minutes > 0
+    is_valid = is_valid || (!c.expire_minutes && !c.expiration_date) // no expiration
     if(is_valid)
       txt += `${c.username}	*	${c.password}	${c.ip_address}\n`
   })
