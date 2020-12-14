@@ -58,8 +58,8 @@ exports.updateChapSecrets = async()=>{
   var txt = ""
   clients.forEach(c=>{
     var exp_date = c.expiration_date? new Date(c.expiration_date) : new Date()
-    var is_expired = exp_date.getTime() <= new Date().getTime()
-    if(!c.expiration_date || !is_expired)
+    var is_valid = exp_date.getTime() > new Date().getTime() || (!c.expiration_date && c.expire_minutes)
+    if(is_valid)
       txt += `${c.username}	*	${c.password}	${c.ip_address}\n`
   })
   await writeFile(chap_secrets, txt).catch(console.log)
