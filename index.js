@@ -22,10 +22,6 @@ module.exports = {
   async install(){
     try{
       await cmd(`chmod a+x ${path.join(__dirname, "scripts/install.sh")}`).catch(console.log)
-      await cmd(`chmod a+x ${path.join(__dirname, "scripts/uninstall.sh")}`).catch(console.log)
-      await cmd(`chmod a+x ${path.join(__dirname, "scripts/start.sh")}`).catch(console.log)
-      await cmd(`chmod a+x ${path.join(__dirname, "scripts/connect.sh")}`).catch(console.log)
-      await cmd(`chmod a+x ${path.join(__dirname, "scripts/disconnect.sh")}`).catch(console.log)
       await cmd(path.join(__dirname, "scripts/install.sh")).catch(console.log)
     }catch(e){
       console.log(e)
