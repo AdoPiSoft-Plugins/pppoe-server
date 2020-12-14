@@ -14,10 +14,7 @@ module.exports = {
     var iface = cfg.interface
     await clients_manager.init()
     setTimeout(async()=>{
-      if(iface && !config.server_started){
-        config.server_started = true
-        await cmd(`${path.join(__dirname, "scripts/start.sh")} ${iface}`).catch(console.log)
-      }
+      await config.startServer()
     }, 3e5) //5m
 
   },

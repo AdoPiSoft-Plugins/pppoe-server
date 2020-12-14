@@ -10,6 +10,23 @@ var ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/var", "cache", "pppo
 var mode = 0o666
 
 exports.server_started = false
+exports.startServer = async()=>{
+  if(exports.server_started) return
+  try{
+    var cfg = exports.read()
+    if(!cfg.interface) throw new Error("Interface not yet setup")
+    await cmd(`${path.join(__dirname, "scripts/start.sh")} ${cfg.interface}`)
+    exports.server_started = true
+  }catch(e){
+    console.log("ERROR Starting PPPOE Server", e)
+  }
+}
+
+exports.restartServer = ()=>{
+  exports.server_started = false
+  return exports.startServer()
+}
+
 exports.read = async()=>{
   return read_file(ini_file, 'utf8').then(txt => {
     return ini.decode(txt||"") || {}

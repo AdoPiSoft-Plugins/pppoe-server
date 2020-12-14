@@ -19,10 +19,7 @@ exports.clients = async(req, res, next)=>{
 exports.settings = async(req, res, next)=>{
   try{
     var cfg = await config.read()
-    if(!config.server_started && cfg.interface){
-      cmd(`${path.join(__dirname, "../scripts/start.sh")} ${cfg.interface}`).catch(console.log);
-      config.server_started = true
-    }
+    await config.startServer()
     res.json(cfg)
   }catch(e){
     next(e)
@@ -35,7 +32,7 @@ exports.updateSettings = async(req, res, next)=>{
     var params = req.body
     await config.save(params)
     if(prev_cfg.interface != params.interface)
-      await cmd(`${path.join(__dirname, "../scripts/start.sh")} ${params.interface}`).catch(console.log);
+      await config.restartServer()
 
     res.json({})
   }catch(e){
