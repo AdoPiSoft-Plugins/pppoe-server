@@ -16,17 +16,17 @@ exports.init = ()=>{
         var exp_date = client.expiration_date || new Date()
         var is_expired = exp_date.getTime() <= new Date().getTime()
         if(is_expired){
-          await exports.onDisconnected({ip: client.ip, iface: client.iface})
+          await exports.disconnect({ip: client.ip, iface: client.iface})
         }
       }
     }))
   }, TICK_INTERVAL);
 }
 
-exports.onConnected = async({ip, iface})=>{
+exports.connect = async({ip, iface})=>{
   var all = await clients.read()
   var index = all.findIndex(c=> c.ip_address == ip)
-  if (index < 0) return exports.onDisconnected({ip, iface})
+  if (index < 0) return exports.disconnect({ip, iface})
   var client = all[index]
   client.status = CONNECTED
   client.iface = iface
@@ -40,7 +40,7 @@ exports.onConnected = async({ip, iface})=>{
     var exp_date = c.expiration_date? new Date(c.expiration_date) : new Date()
     var is_expired = exp_date.getTime() <= new Date().getTime()
     if(is_expired)
-      return exports.onDisconnected({ip, iface})
+      return exports.disconnect({ip, iface})
   }
   list.push({index, client})
   var {wan_iface} = await config.read()
@@ -48,7 +48,7 @@ exports.onConnected = async({ip, iface})=>{
   await clients.updateClient(index, client)
 }
 
-exports.onDisconnected = async({ip, iface})=>{
+exports.disconnect = async({ip, iface})=>{
   var all = await clients.read()
   var index = all.findIndex(c=> c.ip_address == ip)
   if (index < 0) return
