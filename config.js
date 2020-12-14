@@ -7,7 +7,7 @@ var write_text = util.promisify(fs.writeFile)
 var chmod = util.promisify(fs.chmod)
 var path = require("path")
 var cmd = require("./lib/cmd.js")
-var ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/var", "cache", "pppoe-config.ini")
+var ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/etc", "ppp", "pppoe-config.ini")
 var mode = 0o666
 
 exports.server_started = false

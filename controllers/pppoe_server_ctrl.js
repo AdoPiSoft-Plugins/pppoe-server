@@ -73,8 +73,6 @@ exports.deleteClient = async(req, res, next)=>{
   try{
     var {index} = req.params
     var all = await clients.read()
-    await clients.deleteClient(index)
-
     var client = all[index]
     if(client.status == 'connected'){
       try{
@@ -83,7 +81,7 @@ exports.deleteClient = async(req, res, next)=>{
         console.log("FAILED TO DISCONNECT CLIENT:", e)
       }
     }
-
+    await clients.deleteClient(index)
     res.json({})
   }catch(e){
     next(e)
