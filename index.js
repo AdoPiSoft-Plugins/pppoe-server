@@ -21,10 +21,10 @@ module.exports = {
 
   async install(){
     try{
-      shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/install.sh")}`)
-      shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/uninstall.sh")}`)
-      shell.exec(`sudo chmod a+x ${path.join(__dirname, "scripts/start.sh")}`)
-      await cmd(path.join(__dirname, "scripts/install.sh"))
+      await cmd(`sudo chmod a+x ${path.join(__dirname, "scripts/install.sh")}`).catch(console.log)
+      await cmd(`sudo chmod a+x ${path.join(__dirname, "scripts/uninstall.sh")}`).catch(console.log)
+      await cmd(`sudo chmod a+x ${path.join(__dirname, "scripts/start.sh")}`).catch(console.log)
+      await cmd(path.join(__dirname, "scripts/install.sh")).catch(console.log)
     }catch(e){
       console.log(e)
     }
