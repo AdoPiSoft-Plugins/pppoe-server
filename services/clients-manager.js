@@ -13,6 +13,7 @@ exports.init = async()=>{
   setInterval(async() => {
     await promiseSeries(list.map(({index, client})=>{
       return async()=>{
+        console.log("TICK:", {index, client})
         var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
         if(!is_valid){
           await exports.disconnect({ip: client.ip, iface: client.iface})
