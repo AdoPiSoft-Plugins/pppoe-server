@@ -44,6 +44,7 @@ exports.connect = async({ip, iface})=>{
     client.started_at = new Date()
   }else{
     var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
+    is_valid = is_valid || (!client.expiration_date && !client.expire_minutes) // no exp
     if(!is_valid)
       return exports.disconnect({ip, iface})
   }
