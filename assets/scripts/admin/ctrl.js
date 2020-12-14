@@ -13,6 +13,8 @@
           if(c.expiration_date){
             c.expiration_date = new Date(c.expiration_date)
             c.is_expired = c.expiration_date.getTime() <= new Date().getTime()
+          }else if(!c.expiration_date && !c.expire_minutes){
+            c.is_expired = true
           }
           return c
         })

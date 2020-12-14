@@ -27,8 +27,8 @@ exports.init = async()=>{
 exports.connect = async({ip, iface})=>{
   var all = await clients.read()
   var index = all.findIndex(c=> c.ip_address == ip)
-  if (index < 0) return exports.disconnect({ip, iface})
   var client = all[index]
+  if (!client) return exports.disconnect({ip, iface})
   client.status = CONNECTED
   client.iface = iface
   if(client.expire_minutes > 0){
@@ -52,8 +52,8 @@ exports.connect = async({ip, iface})=>{
 exports.disconnect = async({ip, iface})=>{
   var all = await clients.read()
   var index = all.findIndex(c=> c.ip_address == ip)
-  if (index < 0) return
   var client = list[index]
+  if (!client) return
   client.status = DISCONNECTED
   list.splice(list.findIndex(l=> l.index == index), 1)
   var {wan_iface} = await config.read()
