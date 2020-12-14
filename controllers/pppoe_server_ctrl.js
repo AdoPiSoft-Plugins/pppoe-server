@@ -72,7 +72,18 @@ exports.updateClient = async(req, res, next)=>{
 exports.deleteClient = async(req, res, next)=>{
   try{
     var {index} = req.params
+    var all = await clients.read()
     await clients.deleteClient(index)
+
+    var client = all[index]
+    if(client.status == 'connected'){
+      try{
+        await clients_manager.disconnect({ip: client.ip_address, iface: client.iface})
+      }catch(e){
+        console.log("FAILED TO DISCONNECT CLIENT:", e)
+      }
+    }
+
     res.json({})
   }catch(e){
     next(e)
