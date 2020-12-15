@@ -48,6 +48,7 @@
         <thead>
           <th>Username</th>
           <th>Password</th>
+          <th>IP Address</th>
           <th>Max Download</th>
           <th>Max Upload</th>
           <th>Status</th>
@@ -65,6 +66,7 @@
           <tr ng-repeat="client in $parent.clients">
             <td>{{client.username}}</td>
             <td>{{client.password}}</td>
+            <td>{{client.ip_address}}</td>
             <td>{{client.max_download>0? client.max_download+"Kbps" : "Unlimited"}}</td>
             <td>{{client.max_upload>0? client.max_upload+"Kbps" : "Unlimited"}}</td>
             <td>

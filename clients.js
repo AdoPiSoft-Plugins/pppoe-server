@@ -32,6 +32,11 @@ async function endIP(){
 
 function arrayToObj(list){
   return list.reduce((obj, c, i) => {
+    if(c.expiration_date instanceof(Date))
+      c.expiration_date = c.expiration_date.toISOString();
+    if(c.started_at instanceof(Date))
+      c.started_at = c.started_at.toISOString();
+
     if (c.username)
       obj[c.username] = c
     else
@@ -106,11 +111,6 @@ exports.updateClient = async(index, cfg)=>{
   var clients = await exports.read() || []
   var indx = clients.findIndex(c=> c.username == cfg.username)
   if(indx >= 0 && indx != index) throw new Error('Username already exists')
-
-  if(cfg.expiration_date instanceof(Date))
-    cfg.expiration_date = cfg.expiration_date.toISOString();
-  if(cfg.started_at instanceof(Date))
-    cfg.started_at = cfg.started_at.toISOString();
 
   clients[index] = cfg
   clients = arrayToObj(clients)
