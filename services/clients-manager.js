@@ -62,6 +62,18 @@ exports.disconnect = async({ip, iface})=>{
   var index = all.findIndex(c=> c.ip_address == ip)
   var client = all[index]
   if (!client) return
+  await new Promise(r=> setTimeout(r, 2e4)) //wait for 20s
+  var is_up = await new Promise(async(r)=>{
+    try{
+      var res = "";
+      await cmd("ls /sys/class/net", { onData: (o)=>{res += o} })
+      r(res.includes(iface))
+    }catch(e){
+      r()
+    }
+  })
+
+  if(is_up) return
   client.status = DISCONNECTED
   list.splice(list.findIndex(l=> l.index == index), 1)
   var {wan_iface} = await config.read()
