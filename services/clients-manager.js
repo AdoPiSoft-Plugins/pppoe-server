@@ -16,7 +16,7 @@ exports.init = async()=>{
         var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
         is_valid = is_valid || (!client.expiration_date && !client.expire_minutes)
         if(!is_valid){
-          await exports.disconnect({ip: client.ip_address, iface: client.iface})
+          await exports.disconnect({ip: client.ip_address, iface: client.iface, is_expired: true})
         }
       }
     }))
@@ -45,7 +45,7 @@ exports.connect = async({ip, iface})=>{
     var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
     is_valid = is_valid || (!client.expiration_date && !client.expire_minutes) // no exp
     if(!is_valid)
-      return exports.disconnect({ip, iface})
+      return exports.disconnect({ip, iface, is_expired: true})
   }
   if(!client.started_at)
     client.started_at = new Date()
@@ -57,23 +57,26 @@ exports.connect = async({ip, iface})=>{
   await cmd(`${path.join(__dirname, "..", "scripts", "connect.sh")} ${iface} ${wan_iface} ${client.max_download||0} ${client.max_upload||0}`).catch(console.log)
 }
 
-exports.disconnect = async({ip, iface})=>{
+exports.disconnect = async({ip, iface, is_expired})=>{
   var all = await clients.read()
   var index = all.findIndex(c=> c.ip_address == ip)
   var client = all[index]
   if (!client) return
-  await new Promise(r=> setTimeout(r, 2e4)) //wait for 20s
-  var is_up = await new Promise(async(r)=>{
-    try{
-      var res = "";
-      await cmd("ls /sys/class/net", { onData: (o)=>{res += o} })
-      r(res.includes(iface))
-    }catch(e){
-      r()
-    }
-  })
 
-  if(is_up) return
+  if(!is_expired){
+    await new Promise(r=> setTimeout(r, 2e4)) //wait for 20s
+    var is_up = await new Promise(async(r)=>{
+      try{
+        var res = "";
+        await cmd("ls /sys/class/net", { onData: (o)=>{res += o} })
+        r(res.includes(iface))
+      }catch(e){
+        r()
+      }
+    })
+    if(is_up) return
+  }
+
   client.status = DISCONNECTED
   list.splice(list.findIndex(l=> l.index == index), 1)
   var {wan_iface} = await config.read()
