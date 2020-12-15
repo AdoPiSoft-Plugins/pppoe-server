@@ -3,6 +3,8 @@
 v1.0.1
 ===================
 * FIX expiration date/start date becomes blank 
+* FIX Installation error on x64/PC server
+* FIX clients randomly disconnecting
 * Show Account IP Address
 
 v1.0.0
