@@ -4,8 +4,8 @@
 #login
 
 require-chap
-lcp-echo-interval 10
-lcp-echo-failure 2
+lcp-echo-interval 30
+lcp-echo-failure 5
 ms-dns 8.8.8.8
 ms-dns 8.8.4.4
 netmask 255.255.255.0
