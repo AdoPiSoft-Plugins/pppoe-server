@@ -16,7 +16,7 @@ module.exports = {
     setTimeout(async()=>{
       await config.startServer()
     }, 18e4) //3m
-    await cmd(`chmod a+x ${path.join(__dirname, "scripts/*")}`).catch(console.log)
+    shell.exec(`chmod a+x ${path.join(__dirname, "scripts/*")}`)
   },
 
   async install(){
