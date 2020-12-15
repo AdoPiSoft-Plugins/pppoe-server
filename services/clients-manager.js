@@ -64,7 +64,7 @@ exports.disconnect = async({ip, iface, is_expired})=>{
   if (!client) return
 
   if(!is_expired){
-    await new Promise(r=> setTimeout(r, 2e4)) //wait for 20s
+    await new Promise(r=> setTimeout(r, 3e4)) //wait for 30s
     var is_up = await new Promise(async(r)=>{
       try{
         var res = "";
