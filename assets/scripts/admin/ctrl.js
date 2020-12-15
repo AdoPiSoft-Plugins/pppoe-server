@@ -81,7 +81,7 @@
               }
             }else{
               $scope.opts.expiration_unit = 'hours'
-              $scope.opts.expire_hours = $scope.expire_minutes > 0 ? $scope.expire_minutes/60 : 0
+              $scope.opts.expire_hours = $scope.expire_minutes > 0 ? $scope.expire_minutes/60 : 24
             }
           }
 
