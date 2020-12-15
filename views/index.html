@@ -44,58 +44,60 @@
       </button>
       <p></p>
 
-      <table class="table table-bordered">
-        <thead>
-          <th>Username</th>
-          <th>Password</th>
-          <th>IP Address</th>
-          <th>Max Download</th>
-          <th>Max Upload</th>
-          <th>Status</th>
-          <!-- <th>Data Usage</th> -->
-          <th>Start Time</th>
-          <th>Expiration</th>
-          <th></th>
-        </thead>
-        <tbody>
-          <tr ng-show="!$parent.clients.length">
-            <td colspan="9">
-              <center>- No records to show -</center>
-            </td>
-          </tr>
-          <tr ng-repeat="client in $parent.clients">
-            <td>{{client.username}}</td>
-            <td>{{client.password}}</td>
-            <td>{{client.ip_address}}</td>
-            <td>{{client.max_download>0? client.max_download+"Kbps" : "Unlimited"}}</td>
-            <td>{{client.max_upload>0? client.max_upload+"Kbps" : "Unlimited"}}</td>
-            <td>
-              {{client.status || 'disconnected'}}
-            </td>
-            <!-- <td>{{client.data_usage | bytes:2}}</td> -->
-            <td>
-              <center>{{client.started_at? (client.started_at | date:'short') : '-'}}</center>
-            </td>
-            <td>
-              <span ng-show="!client.expire_minutes && !client.expiration_date">N/A</span>
-              <span ng-show="client.expire_minutes || client.expiration_date" ng-class="{'text-danger': client.is_expired}">
-                {{ {expire_minutes: client.expire_minutes, expiration_date: client.expiration_date} | expirationtext }}
-                <sup ng-show="client.is_expired">expired</sup>
-              </span>
-            </td>
-            <td>
-              <button class="btn btn-success btn-sm" ng-click="editClient($index, client)">
-                <i class="fa fa-pen">&nbsp;</i>
-                Edit
-              </button>
-              <button class="btn btn-danger btn-sm" ng-click="deleteClient($index)">
-                <i class="fa fa-trash">&nbsp;</i>
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="scrollable-x">
+        <table class="table table-bordered">
+          <thead>
+            <th>Username</th>
+            <th>Password</th>
+            <th>IP Address</th>
+            <th>Max Download</th>
+            <th>Max Upload</th>
+            <th>Status</th>
+            <!-- <th>Data Usage</th> -->
+            <th>Start Time</th>
+            <th>Expiration</th>
+            <th></th>
+          </thead>
+          <tbody>
+            <tr ng-show="!$parent.clients.length">
+              <td colspan="9">
+                <center>- No records to show -</center>
+              </td>
+            </tr>
+            <tr ng-repeat="client in $parent.clients">
+              <td>{{client.username}}</td>
+              <td>{{client.password}}</td>
+              <td>{{client.ip_address}}</td>
+              <td>{{client.max_download>0? client.max_download+"Kbps" : "Unlimited"}}</td>
+              <td>{{client.max_upload>0? client.max_upload+"Kbps" : "Unlimited"}}</td>
+              <td>
+                {{client.status || 'disconnected'}}
+              </td>
+              <!-- <td>{{client.data_usage | bytes:2}}</td> -->
+              <td>
+                <center>{{client.started_at? (client.started_at | date:'short') : '-'}}</center>
+              </td>
+              <td>
+                <span ng-show="!client.expire_minutes && !client.expiration_date">N/A</span>
+                <span ng-show="client.expire_minutes || client.expiration_date" ng-class="{'text-danger': client.is_expired}">
+                  {{ {expire_minutes: client.expire_minutes, expiration_date: client.expiration_date} | expirationtext }}
+                  <sup ng-show="client.is_expired">expired</sup>
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-success btn-sm" ng-click="editClient($index, client)">
+                  <i class="fa fa-pen">&nbsp;</i>
+                  Edit
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteClient($index)">
+                  <i class="fa fa-trash">&nbsp;</i>
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
