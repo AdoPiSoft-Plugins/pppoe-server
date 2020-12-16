@@ -7,7 +7,6 @@ var promiseSeries = require("promise.series")
 var CONNECTED = 'connected'
 var DISCONNECTED = 'disconnected'
 var TICK_INTERVAL = 6e4 //1m
-var list = []
 
 exports.init = async()=>{
   setInterval(async() => {
@@ -15,8 +14,8 @@ exports.init = async()=>{
     try{
       await cmd(`${path.join(__dirname, "..", "scripts", "list-ppp.sh")}`, { onData: (o)=>{ppp_ifaces += o} })
     }catch(e){}
-
-    await promiseSeries(list.map(({index, client})=>{
+    var list = await clients.read()
+    await promiseSeries(list.map(client=>{
       return async()=>{
         var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
         is_valid = is_valid || (!client.expiration_date && !client.expire_minutes)
@@ -57,7 +56,6 @@ exports.connect = async({ip, iface})=>{
   if(!client.started_at)
     client.started_at = new Date()
 
-  list.push({index, client})
   var {wan_iface} = await config.read()
   console.log("CLIENT:", client)
   await clients.updateClient(index, client)
@@ -85,7 +83,6 @@ exports.disconnect = async({ip, iface, is_expired})=>{
   }
   
   client.status = DISCONNECTED
-  list.splice(list.findIndex(l=> l.index == index), 1)
   var {wan_iface} = await config.read()
   await clients.updateClient(index, client)
   await cmd(`${path.join(__dirname, "..", "scripts", "disconnect.sh")} ${iface} ${wan_iface}`).catch(console.log)

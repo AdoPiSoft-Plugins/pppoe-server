@@ -11,7 +11,7 @@
           c.max_download = parseInt(c.max_download)
           c.max_upload = parseInt(c.max_upload)
 
-          if(c.expiration_date){
+          if(c.expiration_date && !c.expire_minutes){
             c.expiration_date = new Date(c.expiration_date)
             c.is_expired = c.expiration_date.getTime() <= new Date().getTime()
           }
@@ -70,6 +70,7 @@
             $scope.expire_minutes = client.expire_minutes
             $scope.expiration_date = client.expiration_date
             $scope.no_expiration = !client.expire_minutes && !client.expiration_date
+            $scope.is_expired = client.is_expired
             if($scope.expire_minutes >= 1440){
               var days = ($scope.expire_minutes/60)/24
               if (days % 1 == 0){
@@ -122,6 +123,15 @@
             client.max_download = $scope.max_download
             client.max_upload = $scope.max_upload
             client.expire_minutes = $scope.no_expiration? 0 : !$scope.expiration_date? $scope.expire_minutes : 0
+            if($scope.extend_expiration){
+              client.expire_minutes = 0
+              client.expiration_date = new Date(new Date().getTime() + $scope.expire_minutes*60000)
+            }
+
+            if($scope.no_expiration){
+              client.expire_minutes = 0
+              delete client.expiration_date
+            }
             delete client.is_expired
 
             PPPOEService.updateClient(params.index, client).then(function(){

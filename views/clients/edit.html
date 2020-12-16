@@ -36,10 +36,22 @@
 
     <div ng-show="expiration_date">
       <label>Expiration:</label>
-      <input type="text" readonly value="{{expiration_date | date:'short'}}">
+      <input type="text" readonly value="{{expiration_date | date:'short'}}" class="form-control">
+
+      <div>
+        <div class="checkbox">
+          <label class="custom-checkbox">
+            <input type="checkbox" name="no_expiry" ng-model="extend_expiration">
+            <span>
+              Change/Extend Expiration
+            </span>
+          </label>
+        </div>
+      </div>
+
     </div>
 
-    <div ng-hide="expiration_date">
+    <div ng-hide="expiration_date && !extend_expiration">
       <div ng-class="{'has-error' : form.no_expiry.$invalid}">
         <div class="checkbox">
           <label class="custom-checkbox">
