@@ -1,5 +1,10 @@
 # PPPOE Server Plugin for AdoPiSoft Hotspot System
 
+v1.0.2
+===================
+* Allow extending/changing expiration after it has started
+* Enhancements/Fixes
+
 v1.0.1
 ===================
 * FIX expiration date/start date becomes blank 
