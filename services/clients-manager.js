@@ -11,12 +11,19 @@ var list = []
 
 exports.init = async()=>{
   setInterval(async() => {
+    var ppp_ifaces = ""
+    try{
+      await cmd(`${path.join(__dirname, "..", "scripts", "list-ppp.sh")}`, { onData: (o)=>{ppp_ifaces += o} })
+    }catch(e){}
+
     await promiseSeries(list.map(({index, client})=>{
       return async()=>{
         var is_valid = (client.expiration_date instanceof(Date)) && client.expiration_date.getTime() > new Date().getTime()
         is_valid = is_valid || (!client.expiration_date && !client.expire_minutes)
         if(!is_valid){
           await exports.disconnect({ip: client.ip_address, iface: client.iface, is_expired: true})
+        }else if(ppp_ifaces.includes(client.ip_address)){
+          await exports.connect({ip: client.ip_address, iface: client.iface})
         }
       }
     }))
