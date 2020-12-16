@@ -76,7 +76,7 @@ exports.disconnect = async({ip, iface, is_expired})=>{
     })
     if(is_up) return
   }
-
+  
   client.status = DISCONNECTED
   list.splice(list.findIndex(l=> l.index == index), 1)
   var {wan_iface} = await config.read()
