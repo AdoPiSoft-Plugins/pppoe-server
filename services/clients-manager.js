@@ -21,8 +21,6 @@ exports.init = async()=>{
         is_valid = is_valid || (!client.expiration_date && !client.expire_minutes)
         if(!is_valid){
           await exports.disconnect({ip: client.ip_address, iface: client.iface, is_expired: true})
-        }else if(ppp_ifaces.includes(client.ip_address)){
-          await exports.connect({ip: client.ip_address, iface: client.iface})
         }
       }
     }))

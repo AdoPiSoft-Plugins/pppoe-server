@@ -1,7 +1,8 @@
 #!/bin/sh
 ppp=$1
 wan=$2
+mark=9
 
-iptables -D FORWARD -o $ppp -i $wan -j ACCEPT || true
-iptables -D FORWARD -i $ppp -o $wan -j ACCEPT || true
+iptables -t mangle -D FORWARD -o $ppp -j MARK --set-mark $mark || true
+iptables -t mangle -D FORWARD -i $ppp -j MARK --set-mark $mark || true
 ip link delete $ppp || true
