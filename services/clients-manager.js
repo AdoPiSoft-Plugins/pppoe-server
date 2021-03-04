@@ -57,7 +57,6 @@ exports.connect = async({ip, iface})=>{
     client.started_at = new Date()
 
   var {wan_iface} = await config.read()
-  console.log("CLIENT:", client)
   await clients.updateClient(index, client)
   await cmd(`${path.join(__dirname, "..", "scripts", "connect.sh")} ${iface} ${wan_iface} ${client.max_download||0} ${client.max_upload||0}`).catch(console.log)
 }
