@@ -1,5 +1,10 @@
 # PPPOE Server Plugin for AdoPiSoft Hotspot System
 
+v1.0.3
+===================
+* Fix conflict for captive portal users
+* Only compatible for v4.3.0 and later
+
 v1.0.2
 ===================
 * Allow extending/changing expiration after it has started
