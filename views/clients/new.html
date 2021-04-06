@@ -34,7 +34,66 @@
       <span class="help-block" ng-if="form.max_upload.$error.min">Minimum is 1</span>
     </div>
 
-    <div ng-class="{'has-error' : form.no_expiry.$dirty && form.no_expiry.$invalid}">
+    <div ng-class="{'has-success' : auto_bill}">
+      <div class="checkbox">
+        <label class="custom-checkbox">
+          <input type="checkbox" name="auto_bill" ng-model="auto_bill">
+          <span>
+            Auto-bill monthly
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div ng-show="auto_bill">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>
+              Monthly Bill Amount
+            </label>
+            <input class="form-control" type="number" ng-model="billing_amount" placeholder="1299" required min="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>
+              Customer Phone number
+            </label>
+            <input class="form-control" type="string" ng-model="billing_phone_number" placeholder="09xxxxxxxxx" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>
+              Billing Date
+              <small>(day of the month to generate bill)</small>
+            </label>
+            <input class="form-control" type="number" ng-model="billing_date" placeholder="1" min="1" max="30" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>
+              Due Date
+              <small>(disconnection day)</small>
+            </label>
+            <input class="form-control" type="number" ng-model="billing_due_date" placeholder="5" placeholder="1" min="1" max="30" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-hide="auto_bill" ng-class="{'has-error' : form.no_expiry.$dirty && form.no_expiry.$invalid}">
       <div class="checkbox">
         <label class="custom-checkbox">
           <input type="checkbox" name="no_expiry" ng-model="$parent.no_expiration">
@@ -45,7 +104,7 @@
       </div>
     </div>
 
-    <div class="form-group" ng-class="{'has-error' : form.expire_hours.$dirty && form.expire_hours.$invalid}" ng-if="!$parent.no_expiration" ng-init="recomputeExpiration()" >
+    <div ng-hide="auto_bill" class="form-group" ng-class="{'has-error' : form.expire_hours.$dirty && form.expire_hours.$invalid}" ng-if="!$parent.no_expiration" ng-init="recomputeExpiration()" >
       <label>Expiration</label>
       <div class="row">
         <div class="col-md-6">

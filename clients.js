@@ -48,8 +48,9 @@ function arrayToObj(list){
 exports.read = async()=>{
   var txt = await read_file(ini_file, 'utf8').catch(e=> "") || ""
   var clients = (await ini.decode(txt) || {clients: {}}).clients || {}
-  clients = Object.keys(clients).map(u => {
+  clients = Object.keys(clients).map((u, index)=> {
     var p = clients[u]
+    p.index = index
     if(p.expiration_date){
       p.expiration_date = new Date(p.expiration_date)
     }
@@ -95,6 +96,16 @@ exports.createClient = async(cfg)=>{
     cfg.ip_address = _ip_
     break
   }
+
+  if(cfg.auto_bill){
+    var exp_date = new Date()
+    exp_date.setDate(cfg.billing_due_date)
+    if(exp_date <= new Date())
+      exp_date.setMonth(exp_date.getMonth()+1)
+    cfg.expiration_date = exp_date
+    cfg.expire_minutes = 0
+  }
+
   clients.push(cfg)
   clients = arrayToObj(clients)
 

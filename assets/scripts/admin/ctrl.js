@@ -10,6 +10,9 @@
           c.expire_minutes = parseInt(c.expire_minutes)
           c.max_download = parseInt(c.max_download)
           c.max_upload = parseInt(c.max_upload)
+          c.billing_amount = parseInt(c.billing_amount)
+          c.billing_date = parseInt(c.billing_date)
+          c.billing_due_date = parseInt(c.billing_due_date)
 
           if(c.expiration_date && !c.expire_minutes){
             c.expiration_date = new Date(c.expiration_date)
@@ -71,6 +74,12 @@
             $scope.expiration_date = client.expiration_date
             $scope.no_expiration = !client.expire_minutes && !client.expiration_date
             $scope.is_expired = client.is_expired
+            $scope.auto_bill = client.auto_bill
+            $scope.billing_amount = client.billing_amount
+            $scope.billing_phone_number = client.billing_phone_number
+            $scope.billing_date = client.billing_date
+            $scope.billing_due_date = client.billing_due_date
+
             if($scope.expire_minutes >= 1440){
               var days = ($scope.expire_minutes/60)/24
               if (days % 1 == 0){
@@ -107,6 +116,11 @@
               max_download: $scope.max_download,
               max_upload: $scope.max_upload,
               expire_minutes: $scope.no_expiration? 0 : $scope.expire_minutes,
+              auto_bill: $scope.auto_bill,
+              billing_amount: $scope.billing_amount,
+              billing_phone_number: $scope.billing_phone_number,
+              billing_date: $scope.billing_date,
+              billing_due_date: $scope.billing_due_date,
             }
             PPPOEService.createClient(client).then(function(){
               toastr.success("PPPOE Client successfully created")
@@ -123,6 +137,13 @@
             client.max_download = $scope.max_download
             client.max_upload = $scope.max_upload
             client.expire_minutes = $scope.no_expiration? 0 : !$scope.expiration_date? $scope.expire_minutes : 0
+
+            client.auto_bill = $scope.auto_bill
+            client.billing_amount = $scope.billing_amount
+            client.billing_phone_number = $scope.billing_phone_number
+            client.billing_date = $scope.billing_date
+            client.billing_due_date = $scope.billing_due_date
+
             if($scope.extend_expiration){
               client.expire_minutes = 0
               client.expiration_date = new Date(new Date().getTime() + $scope.expire_minutes*60000)

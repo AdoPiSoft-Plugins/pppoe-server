@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $NODE_ENV = "development" ]; then
-  PPP_PATH=/tmp/ppp
+  PPP_PATH=$(pwd)/tmp/ppp
   ROOTPATH=$(pwd)/plugins/pppoe-server
 
   mkdir $PPP_PATH || true
