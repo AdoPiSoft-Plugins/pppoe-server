@@ -7,7 +7,17 @@ var write_text = util.promisify(fs.writeFile)
 var chmod = util.promisify(fs.chmod)
 var path = require("path")
 var cmd = require("./lib/cmd.js")
-var ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/etc", "ppp", "pppoe-config.ini")
+var ini_file;
+
+if (process.env.NODE_ENV == "development"){
+  ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/tmp", "ppp", "pppoe-config.ini")
+  process.env.PPPOE_CLIENTS_PATH=process.env.PPPOE_CLIENTS_PATH || "/tmp/ppp/pppoe-clients.ini"
+  process.env.CHAP_PATH=process.env.CHAP_PATH || "/tmp/ppp/chap-secrets"
+  process.env.IPADDRESS_POOL=process.env.IPADDRESS_POOL || "/tmp/ppp/ipaddress_pool"
+}else{
+  ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/etc", "ppp", "pppoe-config.ini")
+}
+
 var mode = 0o666
 
 exports.server_started = false

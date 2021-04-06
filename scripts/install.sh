@@ -1,13 +1,23 @@
 #!/bin/sh
-sudo apt-get install ppp -y
-ROOTPATH=/opt/adopisoft/plugins/pppoe-server
-chmod a+x $ROOTPATH/scripts/*.sh
-cd $ROOTPATH/rp-pppoe-3.14/src/
-./configure
-make clean
-make
-sudo make install
-mkdir /etc/ppp || true
-cp -rf $ROOTPATH/etc/ppp/* /etc/ppp/
-rm -rf $ROOTPATH/rp-pppoe-3.14
-rm -rf $ROOTPATH/etc
+
+if [ $NODE_ENV = "development" ]; then
+  PPP_PATH=/tmp/ppp
+  ROOTPATH=$(pwd)/plugins/pppoe-server
+
+  mkdir $PPP_PATH || true
+  cp -rf $ROOTPATH/etc/ppp/* $PPP_PATH/
+else
+  ROOTPATH=/opt/adopisoft/plugins/pppoe-server
+  sudo apt-get install ppp -y
+  PPP_PATH=/etc/ppp
+  chmod a+x $ROOTPATH/scripts/*.sh
+  cd $ROOTPATH/rp-pppoe-3.14/src/
+  ./configure
+  make clean
+  make
+  sudo make install
+  mkdir $PPP_PATH || true
+  cp -rf $ROOTPATH/etc/ppp/* $PPP_PATH/
+  rm -rf $ROOTPATH/rp-pppoe-3.14
+  rm -rf $ROOTPATH/etc
+fi
