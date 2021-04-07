@@ -33,6 +33,10 @@
       this.deleteClient = function(index){
         return $http.delete('/pppoe-server/clients/'+index).catch(CatchHttpError);
       }
+
+      this.fetchBill = function(index){
+        return $http.get('/pppoe-server/clients/'+index+'/update-bill').catch(CatchHttpError);
+      }
     }
   ])
 

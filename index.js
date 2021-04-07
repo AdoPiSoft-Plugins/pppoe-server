@@ -5,6 +5,7 @@ var shell = require('shelljs')
 var path = require("path")
 var config = require("./config")
 var clients_manager = require("./services/clients-manager.js")
+var subscriptions = require("./services/subscriptions.js")
 var cmd = require("./lib/cmd.js")
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
     var cfg = await config.read()
     var iface = cfg.interface
     await clients_manager.init()
+    await subscriptions.init()
     setTimeout(async()=>{
       await config.startServer()
     }, 18e4) //3m
