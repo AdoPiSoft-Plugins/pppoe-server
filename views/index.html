@@ -81,10 +81,24 @@
                 <span ng-show="!client.expire_minutes && !client.expiration_date">N/A</span>
                 <span ng-show="client.expire_minutes || client.expiration_date" ng-class="{'text-danger': client.is_expired}">
                   {{ {expire_minutes: client.expire_minutes, expiration_date: client.expiration_date} | expirationtext }}
-                  <sup ng-show="client.is_expired">expired</sup>
+                  <sup ng-show="client.auto_bill">
+                    <small class="text-success" style="font-weight:bold">(auto bill)</small>
+                  </sup>
+
+                  <sup ng-show="client.is_expired">
+                    <small class="text-danger text-strong">(expired)</small>
+                  </sup>
                 </span>
               </td>
               <td>
+                <a ng-show="client.auto_bill && !client.bill_url && client.is_expired" ng-click="fetchBill($index)" class="btn btn-warning btn-sm" ladda="fetchingBill==$index">
+                  Fetch Bill
+                </a>
+
+                <a ng-show="client.auto_bill && client.bill_url" ng-href="{{client.bill_url}}" class="btn btn-primary btn-sm" target="_blank">
+                  <i class="fa fa-file">&nbsp;</i>
+                  Pay Bill
+                </a>
                 <button class="btn btn-success btn-sm" ng-click="editClient($index, client)">
                   <i class="fa fa-pen">&nbsp;</i>
                   Edit

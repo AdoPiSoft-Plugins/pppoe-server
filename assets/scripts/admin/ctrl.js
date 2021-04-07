@@ -203,5 +203,13 @@
         $scope.loadClients()
       })
     }
+
+    $scope.fetchBill = function(index){
+      $scope.fetchingBill = index
+      PPPOEService.fetchBill(index).finally(function(){
+        $scope.loadClients()
+        $scope.fetchingBill = null
+      })
+    }
   })
 })();
