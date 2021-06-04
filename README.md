@@ -1,5 +1,12 @@
 # PPPOE Server Plugin for AdoPiSoft Hotspot System
 
+v1.0.4
+===================
+* Support for auto bill notification
+* Auto renew subscription after the bill is paid
+   - payment will reflect within 5-10 hours after the payment is made 
+
+
 v1.0.3
 ===================
 * Fix conflict for captive portal users
