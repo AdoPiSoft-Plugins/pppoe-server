@@ -11,10 +11,6 @@ var subscriptions = require("./services/subscriptions.js")
 var cmd = require("./lib/cmd.js")
 var clients_ini_path = '/etc/ppp/pppoe-clients.ini'
 
-//removeIf(prod)
-clients_ini_path = path.join(process.env.APPDIR, 'tmp/pppoe-clients.ini')
-//endRemoveIf(prod)
-
 module.exports = {
   async init(id){
     app.use(router)
