@@ -10,6 +10,7 @@ var clients_manager = require("./services/clients-manager.js")
 var subscriptions = require("./services/subscriptions.js")
 var cmd = require("./lib/cmd.js")
 var clients_ini_path = '/etc/ppp/pppoe-clients.ini'
+var config_ini_path = '/etc/ppp/pppoe-config.ini'
 
 module.exports = {
   async init(id){
@@ -48,10 +49,17 @@ module.exports = {
   async backup(backup_dir, plugin_name) {
     console.log('Backing up: ', plugin_name)
     try {
-      var dest_ini_path = path.join(backup_dir, 'plugins', plugin_name, 'pppoe-clients.ini')
+
+      var clients_dest_ini = path.join(backup_dir, 'plugins', plugin_name, 'pppoe-clients.ini')
       if (await fs.pathExists(clients_ini_path)) {
-        await fs.copy(clients_ini_path, dest_ini_path)
+        await fs.copy(clients_ini_path, clients_dest_ini)
       }
+
+      var config_dest_ini = path.join(backup_dir, 'plugins', plugin_name, 'pppoe-config.ini')
+      if (await fs.pathExists(config_ini_path)) {
+        await fs.copy(config_ini_path, config_dest_ini)
+      }
+
     } catch(e) {
       console.log(e)
     }
@@ -59,8 +67,15 @@ module.exports = {
 
   async restore(extract_dir, plugin_name) {
     try {
-      var backup_ini_path = path.join(extract_dir, 'plugins', plugin_name, 'pppoe-clients.ini')
-      await fs.copy(backup_ini_path, clients_ini_path)
+
+      var backup_clients_ini_path = path.join(extract_dir, 'plugins', plugin_name, 'pppoe-clients.ini')
+      if (await fs.pathExists(backup_clients_ini_path))
+        await fs.copy(backup_clients_ini_path, clients_ini_path)
+
+      var backup_config_ini_path = path.join(extract_dir, 'plugins', plugin_name, 'pppoe-config.ini')
+      if (await fs.pathExists(backup_config_ini_path))
+        await fs.copy(backup_config_ini_path, config_ini_path)
+
     } catch(e) {}
   }
 }
