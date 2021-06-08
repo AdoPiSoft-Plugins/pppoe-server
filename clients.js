@@ -10,7 +10,6 @@ var path = require("path")
 var ini_file = process.env.PPPOE_CLIENTS_PATH || path.join("/etc", "ppp", "pppoe-clients.ini")
 var chap_secrets = process.env.CHAP_PATH || '/etc/ppp/chap-secrets'
 var ip_address_pool = process.env.IPADDRESS_POOL || '/etc/ppp/ipaddress_pool'
-var shell = require('shelljs')
 var IP = require("ip6addr")
 var mode = 0o666
 
