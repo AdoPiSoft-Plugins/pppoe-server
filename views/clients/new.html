@@ -45,14 +45,14 @@
       </div>
     </div>
 
-    <div ng-show="auto_bill">
+    <div ng-if="auto_bill">
       <div class="row">
         <div class="col-md-8">
           <div class="form-group">
             <label>
               Monthly Bill Amount
             </label>
-            <input class="form-control" type="number" ng-model="billing_amount" placeholder="1299" required min="1">
+            <input class="form-control" type="number" ng-model="$parent.billing_amount" placeholder="1299" required min="1">
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@
             <label>
               Customer Phone number
             </label>
-            <input class="form-control" type="string" ng-model="billing_phone_number" placeholder="09xxxxxxxxx" required>
+            <input class="form-control" type="string" ng-model="$parent.billing_phone_number" placeholder="09xxxxxxxxx" required>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
               Billing Date
               <small>(day of the month to generate bill)</small>
             </label>
-            <input class="form-control" type="number" ng-model="billing_date" placeholder="1" min="1" max="30" required>
+            <input class="form-control" type="number" ng-model="$parent.billing_date" placeholder="1" min="1" max="30" required>
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@
               Due Date
               <small>(disconnection day)</small>
             </label>
-            <input class="form-control" type="number" ng-model="billing_due_date" placeholder="5" placeholder="1" min="1" max="30" required>
+            <input class="form-control" type="number" ng-model="$parent.billing_due_date" placeholder="5" placeholder="1" min="1" max="30" required>
           </div>
         </div>
       </div>
