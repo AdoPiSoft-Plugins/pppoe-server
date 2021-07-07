@@ -44,8 +44,11 @@ function arrayToObj(list){
   }, {})
 }
 
-exports.read = async()=>{
-  var txt = await read_file(ini_file, 'utf8').catch(e=> "") || ""
+exports.read = async(ini_file_path)=>{
+  if(!ini_file_path)
+    ini_file_path = ini_file;
+  
+  var txt = await read_file(ini_file_path, 'utf8').catch(e=> "") || ""
   var clients = (await ini.decode(txt) || {clients: {}}).clients || {}
   clients = Object.keys(clients).map((u, index)=> {
     var p = clients[u]
