@@ -1,9 +1,11 @@
 'use strict'
 
 var fs = require('fs-extra')
+var promiseSeries = require("promise.series")
 
 var { app } = require('../core')
 var router = require("./router")
+var clients = require("./clients")
 var path = require("path")
 var config = require("./config")
 var clients_manager = require("./services/clients-manager.js")
@@ -70,7 +72,16 @@ module.exports = {
 
       var backup_clients_ini_path = path.join(extract_dir, 'plugins', plugin_name, 'pppoe-clients.ini')
       if (await fs.pathExists(backup_clients_ini_path))
-        await fs.copy(backup_clients_ini_path, clients_ini_path)
+        var backup_clients = await clients.read(backup_clients_ini_path)
+        await promiseSeries(backup_clients.map(c => {
+          return async()=>{
+            try{
+              await clients.createClient(c)
+            }catch(e){
+              // client skipped
+            }
+          }
+        }))
 
       var backup_config_ini_path = path.join(extract_dir, 'plugins', plugin_name, 'pppoe-config.ini')
       if (await fs.pathExists(backup_config_ini_path))
