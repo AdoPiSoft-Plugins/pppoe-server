@@ -83,6 +83,9 @@ exports.disconnect = async({ip, iface, is_expired})=>{
   
   client.status = DISCONNECTED
   var {wan_iface} = await config.read()
+  if (client.iface){
+    await cmd(`${path.join(__dirname, "..", "scripts", "disconnect.sh")} ${iface} ${wan_iface}`).catch(console.log)
+  }
+  client.iface = null
   await clients.updateClient(index, client)
-  await cmd(`${path.join(__dirname, "..", "scripts", "disconnect.sh")} ${iface} ${wan_iface}`).catch(console.log)
 }
