@@ -1,4 +1,12 @@
 # PPPOE Server Plugin for AdoPiSoft Hotspot System
+v1.0.5
+===================
+- Compatible with AdoPiSoft V5 and later only
+- Can backup / restore PPPoE clients
+- Minor UI enhancements
+- FIX disconnection bug
+
+--- 
 
 v1.0.4
 ===================
