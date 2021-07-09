@@ -77,9 +77,26 @@ exports.updateChapSecrets = async()=>{
   await writeFile(chap_secrets, txt).catch(console.log)
 }
 
+exports.isValidPhone = (phone)=>{
+  if (!phone) return false;
+  return phone.length === 11 || phone.substr(0, 2) === '09' || !isNaN(phone);
+}
+
 exports.createClient = async(cfg)=>{
   if(!cfg.username || !cfg.password){
     throw new Error('Username and password are required fields')
+  }
+
+  if (cfg.auto_bill && !exports.isValidPhone(cfg.billing_phone_number)){
+    throw new Error('Phone number is invalid!')
+  }
+
+  if(cfg.auto_bill && !(cfg.billing_due_date > 0)){
+    throw new Error('Bill due date is invalid')
+  }
+
+  if(cfg.auto_bill && !(cfg.billing_date > 0)){
+    throw new Error('Billing date is invalid')
   }
 
   var clients = await exports.read() || []
@@ -121,9 +138,32 @@ exports.updateClient = async(index, cfg)=>{
   if(!cfg.username || !cfg.password){
     throw new Error('Username and password are required fields')
   }
+  if (cfg.auto_bill && !exports.isValidPhone(cfg.billing_phone_number)){
+    throw new Error('Phone number is invalid!')
+  }
+
+  if(cfg.auto_bill && !(cfg.billing_due_date > 0)){
+    throw new Error('Bill due date is invalid')
+  }
+
+  if(cfg.auto_bill && !(cfg.billing_date > 0)){
+    throw new Error('Billing date is invalid')
+  }
+
   var clients = await exports.read() || []
   var indx = clients.findIndex(c=> c.username == cfg.username)
   if(indx >= 0 && indx != index) throw new Error('Username already exists')
+
+  if(cfg.auto_bill){
+    var exp_date = cfg.expiration_date ? new Date(cfg.expiration_date) : new Date()
+    if (isNaN(exp_date.getTime())) exp_date = new Date();
+
+    exp_date.setDate(cfg.billing_due_date)
+    if(exp_date <= new Date())
+      exp_date.setMonth(exp_date.getMonth()+1)
+    cfg.expiration_date = exp_date
+    cfg.expire_minutes = 0
+  }
 
   clients[index] = cfg
   clients = arrayToObj(clients)

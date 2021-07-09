@@ -80,7 +80,14 @@
             <label>
               Customer Phone number
             </label>
-            <input class="form-control" type="string" ng-model="$parent.billing_phone_number" placeholder="09xxxxxxxxx" required>
+            <input class="form-control" type="string" name="billing_phone_number" ng-model="$parent.billing_phone_number" placeholder="09xxxxxxxxx" minlength="11" maxlength="11" required ng-pattern="/^(\+?639|09)(\d{9})$/">
+
+            <span class="help-block text-danger" 
+                  ng-show="(form.billing_phone_number.$error.required || 
+                           form.billing_phone_number.$error.number ||
+                           form.billing_phone_number.$error.pattern) && form.billing_phone_number.$dirty">
+                           Valid phone number is required
+            </span>
           </div>
         </div>
       </div>

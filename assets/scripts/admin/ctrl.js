@@ -146,7 +146,10 @@
 
             if($scope.extend_expiration){
               client.expire_minutes = 0
-              client.expiration_date = new Date(new Date().getTime() + $scope.expire_minutes*60000)
+              var exp_date = client.expiration_date ? new Date(client.expiration_date) : new Date()
+              if(isNaN(exp_date.getTime())) exp_date = new Date()
+              
+              client.expiration_date = new Date(exp_date.getTime() + $scope.expire_minutes * 60000)
             }
 
             if($scope.no_expiration){
