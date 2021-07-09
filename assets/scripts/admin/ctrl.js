@@ -163,6 +163,7 @@
             })
           }
         },
+        backdrop: 'static',
         scope: $scope,
       }).result
       .then(function() {
