@@ -6,58 +6,62 @@ var read_file = util.promisify(fs.readFile)
 var write_text = util.promisify(fs.writeFile)
 var writeFile = write_text
 var chmod = util.promisify(fs.chmod)
-var path = require("path")
-var ini_file = process.env.PPPOE_CLIENTS_PATH || path.join("/etc", "ppp", "pppoe-clients.ini")
+var path = require('path')
+var ini_file = process.env.PPPOE_CLIENTS_PATH || path.join('/etc', 'ppp', 'pppoe-clients.ini')
 var chap_secrets = process.env.CHAP_PATH || '/etc/ppp/chap-secrets'
 var ip_address_pool = process.env.IPADDRESS_POOL || '/etc/ppp/ipaddress_pool'
-var IP = require("ip6addr")
+var IP = require('ip6addr')
 var mode = 0o666
 
-var start_ip, end_ip;
-async function startIP(){
-  if(start_ip) return start_ip
-  var txt = await read_file(ip_address_pool, 'utf8').catch(e=> "") || ""
-  start_ip = (txt.match(/^(\d+.\d+.\d+.\d+)\-/) || [])[1]
+var start_ip, end_ip
+async function startIP () {
+  if (start_ip) return start_ip
+  var txt = await read_file(ip_address_pool, 'utf8').catch(e => '') || ''
+  start_ip = (txt.match(/^(\d+.\d+.\d+.\d+)-/) || [])[1]
   return start_ip
 }
 
-async function endIP(){
-  if(end_ip) return end_ip
-  var txt = await read_file(ip_address_pool, 'utf8').catch(e=> "") || ""
-  var regx = (txt.match(/^(\d+.\d+.\d+.\d+)\-(\d+)/) || [])
+async function endIP () {
+  if (end_ip) return end_ip
+  var txt = await read_file(ip_address_pool, 'utf8').catch(e => '') || ''
+  var regx = (txt.match(/^(\d+.\d+.\d+.\d+)-(\d+)/) || [])
   end_ip = regx[1].replace(/\d+$/, regx[2])
   return start_ip
 }
 
-function arrayToObj(list){
+function arrayToObj (list) {
   return list.reduce((obj, c, i) => {
-    if(c.expiration_date instanceof(Date))
-      c.expiration_date = c.expiration_date.toISOString();
-    if(c.started_at instanceof(Date))
-      c.started_at = c.started_at.toISOString();
+    if (c.expiration_date instanceof (Date)) {
+      c.expiration_date = c.expiration_date.toISOString()
+    }
+    if (c.started_at instanceof (Date)) {
+      c.started_at = c.started_at.toISOString()
+    }
 
-    if (c.username)
+    if (c.username) {
       obj[c.username] = c
-    else
+    } else {
       obj[i] = c
+    }
     return obj
   }, {})
 }
 
-exports.read = async(ini_file_path)=>{
-  if(!ini_file_path)
-    ini_file_path = ini_file;
-  
-  var txt = await read_file(ini_file_path, 'utf8').catch(e=> "") || ""
+exports.read = async (ini_file_path) => {
+  if (!ini_file_path) {
+    ini_file_path = ini_file
+  }
+  var txt = await read_file(ini_file_path, 'utf8').catch(e => '') || ''
   var clients = (await ini.decode(txt) || {clients: {}}).clients || {}
-  clients = Object.keys(clients).map((u, index)=> {
+  clients = Object.keys(clients).map((u, index) => {
     var p = clients[u]
     p.index = index
-    if(p.expiration_date){
+    if (p.expiration_date) {
       p.expiration_date = new Date(p.expiration_date)
     }
-    if(p.started_at)
+    if (p.started_at) {
       p.started_at = new Date(p.started_at)
+    }
     p.expire_minutes = parseInt(p.expire_minutes)
 
     return p
@@ -65,49 +69,51 @@ exports.read = async(ini_file_path)=>{
   return clients || []
 }
 
-exports.updateChapSecrets = async()=>{
+exports.updateChapSecrets = async () => {
   var clients = await exports.read()
-  var txt = ""
-  clients.forEach(c=>{
-    var is_valid = (c.expiration_date instanceof(Date)) ? c.expiration_date.getTime() > new Date().getTime() : c.expire_minutes > 0
+  var txt = ''
+  clients.forEach(c => {
+    var is_valid = (c.expiration_date instanceof (Date)) ? c.expiration_date.getTime() > new Date().getTime() : c.expire_minutes > 0
     is_valid = is_valid || (!c.expire_minutes && !c.expiration_date) // no expiration
-    if(is_valid)
+    if (is_valid) {
+      // eslint-disable-next-line no-tabs
       txt += `${c.username}	*	${c.password}	${c.ip_address}\n`
+    }
   })
   await writeFile(chap_secrets, txt).catch(console.log)
 }
 
-exports.isValidPhone = (phone)=>{
-  if (!phone) return false;
-  return phone.length === 11 || phone.substr(0, 2) === '09' || !isNaN(phone);
+exports.isValidPhone = (phone) => {
+  if (!phone) return false
+  return phone.length === 11 || phone.substr(0, 2) === '09' || !isNaN(phone)
 }
 
-exports.createClient = async(cfg)=>{
-  if(!cfg.username || !cfg.password){
+exports.createClient = async (cfg) => {
+  if (!cfg.username || !cfg.password) {
     throw new Error('Username and password are required fields')
   }
 
-  if (cfg.auto_bill && !exports.isValidPhone(cfg.billing_phone_number)){
+  if (cfg.auto_bill && !exports.isValidPhone(cfg.billing_phone_number)) {
     throw new Error('Phone number is invalid!')
   }
 
-  if(cfg.auto_bill && !(cfg.billing_due_date > 0)){
+  if (cfg.auto_bill && !(cfg.billing_due_date > 0)) {
     throw new Error('Bill due date is invalid')
   }
 
-  if(cfg.auto_bill && !(cfg.billing_date > 0)){
+  if (cfg.auto_bill && !(cfg.billing_date > 0)) {
     throw new Error('Billing date is invalid')
   }
 
   var clients = await exports.read() || []
-  var exists = clients.find(c=> c.username == cfg.username)
-  if(exists) throw new Error('Username already exists')
+  var exists = clients.find(c => c.username === cfg.username)
+  if (exists) throw new Error('Username already exists')
 
   var i = 0
   var _ip_ = await startIP()
-  while(!cfg.ip_address && i <= 9999){
-    var exists = clients.findIndex(c=> c.ip_address == _ip_)
-    if(exists >= 0 || _ip_ == await endIP()){
+  while (!cfg.ip_address && i <= 9999) {
+    exists = clients.findIndex(c => c.ip_address === _ip_)
+    if (exists >= 0 || _ip_ === await endIP()) {
       _ip_ = IP.parse(_ip_).offset(1).toString()
       i++
       continue
@@ -116,11 +122,12 @@ exports.createClient = async(cfg)=>{
     break
   }
 
-  if(cfg.auto_bill){
+  if (cfg.auto_bill) {
     var exp_date = new Date()
     exp_date.setDate(cfg.billing_due_date)
-    if(exp_date <= new Date())
-      exp_date.setMonth(exp_date.getMonth()+1)
+    if (exp_date <= new Date()) {
+      exp_date.setMonth(exp_date.getMonth() + 1)
+    }
     cfg.expiration_date = exp_date
     cfg.expire_minutes = 0
   }
@@ -134,33 +141,35 @@ exports.createClient = async(cfg)=>{
   return exports.read()
 }
 
-exports.updateClient = async(index, cfg)=>{
-  if(!cfg.username || !cfg.password){
+exports.updateClient = async (index, cfg) => {
+  if (!cfg.username || !cfg.password) {
     throw new Error('Username and password are required fields')
   }
-  if (cfg.auto_bill && !exports.isValidPhone(cfg.billing_phone_number)){
+  if (cfg.auto_bill && !exports.isValidPhone(cfg.billing_phone_number)) {
     throw new Error('Phone number is invalid!')
   }
 
-  if(cfg.auto_bill && !(cfg.billing_due_date > 0)){
+  if (cfg.auto_bill && !(cfg.billing_due_date > 0)) {
     throw new Error('Bill due date is invalid')
   }
 
-  if(cfg.auto_bill && !(cfg.billing_date > 0)){
+  if (cfg.auto_bill && !(cfg.billing_date > 0)) {
     throw new Error('Billing date is invalid')
   }
 
   var clients = await exports.read() || []
-  var indx = clients.findIndex(c=> c.username == cfg.username)
-  if(indx >= 0 && indx != index) throw new Error('Username already exists')
+  var indx = clients.findIndex(c => c.username === cfg.username)
+  // eslint-disable-next-line eqeqeq
+  if (indx >= 0 && indx != index) throw new Error('Username already exists')
 
-  if(cfg.auto_bill){
+  if (cfg.auto_bill) {
     var exp_date = cfg.expiration_date ? new Date(cfg.expiration_date) : new Date()
-    if (isNaN(exp_date.getTime())) exp_date = new Date();
+    if (isNaN(exp_date.getTime())) exp_date = new Date()
 
     exp_date.setDate(cfg.billing_due_date)
-    if(exp_date <= new Date())
-      exp_date.setMonth(exp_date.getMonth()+1)
+    if (exp_date <= new Date()) {
+      exp_date.setMonth(exp_date.getMonth() + 1)
+    }
     cfg.expiration_date = exp_date
     cfg.expire_minutes = 0
   }
@@ -174,9 +183,9 @@ exports.updateClient = async(index, cfg)=>{
   return exports.read()
 }
 
-exports.deleteClient = async(index)=>{
+exports.deleteClient = async (index) => {
   var clients = await exports.read() || []
-  clients.splice(index, 1);
+  clients.splice(index, 1)
   clients = arrayToObj(clients)
 
   await writeFile(ini_file, ini.stringify({clients}), {mode})

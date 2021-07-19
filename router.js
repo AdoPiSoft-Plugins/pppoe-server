@@ -1,6 +1,6 @@
 'use strict'
 
-var core = require('../core')
+var core = require('plugin-core')
 var { router, middlewares } = core
 var { express, bodyParser } = middlewares
 var pppoe_server_ctrl = require('./controllers/pppoe_server_ctrl.js')
