@@ -1,7 +1,7 @@
 'use strict';
 
 var promiseSeries = require("promise.series")
-var core = require('../../core')
+var core = require('plugin-core')
 var config = require("../config.js")
 var clients = require("../clients.js")
 var path = require('path')
