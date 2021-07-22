@@ -176,13 +176,13 @@
 
     $scope.newClient = function(){
       return $scope.clientModal({
-        template: '/plugins/pppoe-server/views/clients/new.html'
+        template: '/public/plugins/pppoe-server/views/clients/new.html'
       })
     }
 
     $scope.editClient = function(index, client){
       return $scope.clientModal({
-        template: '/plugins/pppoe-server/views/clients/edit.html',
+        template: '/public/plugins/pppoe-server/views/clients/edit.html',
         index: index,
         client: client
       })
