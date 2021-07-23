@@ -5,7 +5,7 @@
   .config(function($stateProvider) {
     $stateProvider
     .state('plugins.pppoe_server', {
-      templateUrl : "/plugins/pppoe-server/views/index.html",
+      templateUrl : "/public/plugins/pppoe-server/views/index.html",
       controller: 'PPPOEServerCtrl',
       url: '/pppoe-server',
       title: 'PPPOE Server',
