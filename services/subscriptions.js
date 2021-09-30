@@ -16,7 +16,7 @@ exports.init = async () => {
 }
 
 exports.tick = async () => {
-  let list = (await clients.read()).filter(l => l.auto_bill)
+  let list = (await clients.listAll()).filter(l => l.auto_bill)
 
   await promiseSeries(list.map(client => {
     return async () => {
@@ -32,7 +32,7 @@ exports.generateBill = async (client) => {
     var billing_date = new Date(due_date.getTime())
     billing_date.setDate(client.billing_date)
 
-    var ref_number = [client.index, due_date.getTime()].join('')
+    var ref_number = [client.id, due_date.getTime()].join('')
 
     if (today >= billing_date) {
       if (await bills_manager.isPaid(ref_number)) return

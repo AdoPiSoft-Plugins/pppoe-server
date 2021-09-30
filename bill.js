@@ -39,7 +39,7 @@ class Bill extends EventEmitter {
       next_exp.setMonth(next_exp.getMonth() + 1)
     }
     acc.expiration_date = next_exp
-    await clients.updateClient(acc.index, acc)
+    await clients.updateClient(acc.id, acc)
   }
 }
 

@@ -1,17 +1,14 @@
 'use strict'
-var ini = require('ini')
 var util = require('util')
 var fs = require('fs')
 var read_file = util.promisify(fs.readFile)
 var write_text = util.promisify(fs.writeFile)
 var writeFile = write_text
-var chmod = util.promisify(fs.chmod)
-var path = require('path')
-var ini_file = process.env.PPPOE_CLIENTS_PATH || path.join('/etc', 'ppp', 'pppoe-clients.ini')
+var { dbi, machine_id } = require('plugin-core')
+var { Sequelize } = dbi
 var chap_secrets = process.env.CHAP_PATH || '/etc/ppp/chap-secrets'
 var ip_address_pool = process.env.IPADDRESS_POOL || '/etc/ppp/ipaddress_pool'
 var IP = require('ip6addr')
-var mode = 0o666
 
 var start_ip, end_ip
 async function startIP () {
@@ -29,48 +26,13 @@ async function endIP () {
   return start_ip
 }
 
-function arrayToObj (list) {
-  return list.reduce((obj, c, i) => {
-    if (c.expiration_date instanceof (Date)) {
-      c.expiration_date = c.expiration_date.toISOString()
-    }
-    if (c.started_at instanceof (Date)) {
-      c.started_at = c.started_at.toISOString()
-    }
-
-    if (c.username) {
-      obj[c.username] = c
-    } else {
-      obj[i] = c
-    }
-    return obj
-  }, {})
-}
-
-exports.read = async (ini_file_path) => {
-  if (!ini_file_path) {
-    ini_file_path = ini_file
-  }
-  var txt = await read_file(ini_file_path, 'utf8').catch(e => '') || ''
-  var clients = (await ini.decode(txt) || {clients: {}}).clients || {}
-  clients = Object.keys(clients).map((u, index) => {
-    var p = clients[u]
-    p.index = index
-    if (p.expiration_date) {
-      p.expiration_date = new Date(p.expiration_date)
-    }
-    if (p.started_at) {
-      p.started_at = new Date(p.started_at)
-    }
-    p.expire_minutes = parseInt(p.expire_minutes)
-
-    return p
-  })
+exports.listAll = async () => {
+  let clients = await dbi.models.PppoeAccount.scope(['default_scope']).findAll({})
   return clients || []
 }
 
 exports.updateChapSecrets = async () => {
-  var clients = await exports.read()
+  var clients = await exports.listAll()
   var txt = ''
   clients.forEach(c => {
     var is_valid = (c.expiration_date instanceof (Date)) ? c.expiration_date.getTime() > new Date().getTime() : c.expire_minutes > 0
@@ -105,14 +67,14 @@ exports.createClient = async (cfg) => {
     throw new Error('Billing date is invalid')
   }
 
-  var clients = await exports.read() || []
-  var exists = clients.find(c => c.username === cfg.username)
-  if (exists) throw new Error('Username already exists')
+  var clients = await exports.listAll() || []
+  var conflict = await dbi.models.PppoeAccount.scope(['default_scope']).findOne({where: {username: cfg.username}})
+  if (conflict) throw new Error('Username already exists')
 
   var i = 0
   var _ip_ = await startIP()
   while (!cfg.ip_address && i <= 9999) {
-    exists = clients.findIndex(c => c.ip_address === _ip_)
+    let exists = clients.findIndex(c => c.ip_address === _ip_)
     if (exists >= 0 || _ip_ === await endIP()) {
       _ip_ = IP.parse(_ip_).offset(1).toString()
       i++
@@ -131,17 +93,12 @@ exports.createClient = async (cfg) => {
     cfg.expiration_date = exp_date
     cfg.expire_minutes = 0
   }
-
-  clients.push(cfg)
-  clients = arrayToObj(clients)
-
-  await writeFile(ini_file, ini.stringify({clients}), {mode})
-  await chmod(ini_file, mode)
+  await dbi.models.PppoeAccount.scope(['default_scope']).create({...cfg, machine_id })
   await exports.updateChapSecrets()
-  return exports.read()
+  return exports.listAll()
 }
 
-exports.updateClient = async (index, cfg) => {
+exports.updateClient = async (id, cfg) => {
   if (!cfg.username || !cfg.password) {
     throw new Error('Username and password are required fields')
   }
@@ -157,10 +114,9 @@ exports.updateClient = async (index, cfg) => {
     throw new Error('Billing date is invalid')
   }
 
-  var clients = await exports.read() || []
-  var indx = clients.findIndex(c => c.username === cfg.username)
-  // eslint-disable-next-line eqeqeq
-  if (indx >= 0 && indx != index) throw new Error('Username already exists')
+  const { Op } = Sequelize
+  var conflict = await dbi.models.PppoeAccount.scope(['default_scope']).findOne({where: {username: cfg.username, id: {[Op.not]: id}}})
+  if (conflict) throw new Error('Username already exists')
 
   if (cfg.auto_bill) {
     var exp_date = cfg.expiration_date ? new Date(cfg.expiration_date) : new Date()
@@ -173,23 +129,13 @@ exports.updateClient = async (index, cfg) => {
     cfg.expiration_date = exp_date
     cfg.expire_minutes = 0
   }
-
-  clients[index] = cfg
-  clients = arrayToObj(clients)
-
-  await writeFile(ini_file, ini.stringify({clients}), {mode})
-  await chmod(ini_file, mode)
+  await dbi.models.PppoeAccount.update(cfg, {where: {id: id}})
   await exports.updateChapSecrets()
-  return exports.read()
+  return exports.listAll()
 }
 
-exports.deleteClient = async (index) => {
-  var clients = await exports.read() || []
-  clients.splice(index, 1)
-  clients = arrayToObj(clients)
-
-  await writeFile(ini_file, ini.stringify({clients}), {mode})
-  await chmod(ini_file, mode)
+exports.deleteClient = async (id) => {
+  await dbi.models.PppoeAccount.scope(['default_scope']).destroy({where: {id: id}})
   await exports.updateChapSecrets()
-  return exports.read()
+  return exports.listAll()
 }

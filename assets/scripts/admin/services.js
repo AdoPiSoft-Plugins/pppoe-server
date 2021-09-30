@@ -1,5 +1,5 @@
 (function () {
-  'use strict';
+  'use strict'
 
   var App = angular.module('Plugins')
 
@@ -8,36 +8,34 @@
     'toastr',
     'CatchHttpError',
     '$q',
-    function($http, toastr, CatchHttpError, $q) {
-
+    function ($http, toastr, CatchHttpError, $q) {
       this.clients = function () {
-        return $http.get('/pppoe-server/clients').catch(CatchHttpError);
+        return $http.get('/pppoe-server/clients').catch(CatchHttpError)
       }
 
-      this.settings = function() {
-        return $http.get('/pppoe-server/settings').catch(CatchHttpError);
+      this.settings = function () {
+        return $http.get('/pppoe-server/settings').catch(CatchHttpError)
       }
 
-      this.updateSettings = function(cfg) {
-        return $http.post('/pppoe-server/settings', cfg).catch(CatchHttpError);
+      this.updateSettings = function (cfg) {
+        return $http.post('/pppoe-server/settings', cfg).catch(CatchHttpError)
       }
 
-      this.createClient = function(cfg) {
+      this.createClient = function (cfg) {
         return $http.post('/pppoe-server/clients', cfg)
       }
 
-      this.updateClient = function(index, cfg) {
-        return $http.post('/pppoe-server/clients/'+index, cfg)
+      this.updateClient = function (id, cfg) {
+        return $http.post('/pppoe-server/clients/' + id, cfg)
       }
 
-      this.deleteClient = function(index){
-        return $http.delete('/pppoe-server/clients/'+index).catch(CatchHttpError);
+      this.deleteClient = function (id) {
+        return $http.delete('/pppoe-server/clients/' + id).catch(CatchHttpError)
       }
 
-      this.fetchBill = function(index){
-        return $http.get('/pppoe-server/clients/'+index+'/update-bill').catch(CatchHttpError);
+      this.fetchBill = function (id) {
+        return $http.get('/pppoe-server/clients/' + id + '/update-bill').catch(CatchHttpError)
       }
     }
   ])
-
-})();
+})()

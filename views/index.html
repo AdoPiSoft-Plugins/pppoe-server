@@ -91,7 +91,7 @@
                 </span>
               </td>
               <td>
-                <a ng-show="client.auto_bill && !client.bill_url && client.is_expired" ng-click="fetchBill($index)" class="btn btn-warning btn-sm" ladda="fetchingBill==$index">
+                <a ng-show="client.auto_bill && !client.bill_url && client.is_expired" ng-click="fetchBill(client.id)" class="btn btn-warning btn-sm" ladda="fetchingBill == client.id">
                   Fetch Bill
                 </a>
 
@@ -99,11 +99,11 @@
                   <i class="fa fa-file">&nbsp;</i>
                   Pay Bill
                 </a>
-                <button class="btn btn-success btn-sm" ng-click="editClient($index, client)">
+                <button class="btn btn-success btn-sm" ng-click="editClient(client.id, client)">
                   <i class="fa fa-pen">&nbsp;</i>
                   Edit
                 </button>
-                <button class="btn btn-danger btn-sm" ng-click="deleteClient($index)">
+                <button class="btn btn-danger btn-sm" ng-click="deleteClient(client.id)">
                   <i class="fa fa-trash">&nbsp;</i>
                   Delete
                 </button>

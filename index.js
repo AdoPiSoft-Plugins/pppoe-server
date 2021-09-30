@@ -6,6 +6,7 @@ var promiseSeries = require('promise.series')
 var { app } = require('plugin-core')
 var router = require('./router')
 var clients = require('./clients')
+var models = require('./models')
 var path = require('path')
 var config = require('./config')
 var clients_manager = require('./services/clients-manager.js')
@@ -16,9 +17,10 @@ var config_ini_path = '/etc/ppp/pppoe-config.ini'
 
 module.exports = {
   async init (id) {
-    app.use(router)
+    await models.init()
     await clients_manager.init()
     await subscriptions.init()
+    app.use(router)
     setTimeout(async () => {
       await config.startServer()
     }, 18e4) //3m
@@ -67,7 +69,7 @@ module.exports = {
     try {
       var backup_clients_ini_path = path.join(extract_dir, 'plugins', plugin_name, 'pppoe-clients.ini')
       if (await fs.pathExists(backup_clients_ini_path)) {
-        var backup_clients = await clients.read(backup_clients_ini_path)
+        var backup_clients = await clients.listAll(backup_clients_ini_path)
         await promiseSeries(backup_clients.map(c => {
           return async () => {
             try {
