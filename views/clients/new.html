@@ -12,25 +12,25 @@
   <div class="modal-body">
     <div class="form-group" ng-class="{'has-error' : form.username.$dirty && form.username.$invalid}">
       <label>Username:</label>
-      <input class="form-control" type="text" name="username" ng-model="$parent.username" required>
+      <input class="form-control" type="text" name="username" ng-model="username" required>
       <span class="help-block" ng-show="form.username.$error.$invalid">This fieled is required</span>
     </div>
 
     <div class="form-group" ng-class="{'has-error' : form.password.$dirty && form.password.$invalid}">
       <label>Password:</label>
-      <input class="form-control" type="text" name="password" ng-model="$parent.password" required>
+      <input class="form-control" type="text" name="password" ng-model="password" required>
       <span class="help-block" ng-show="form.password.$error.$invalid">This fieled is required</span>
     </div>
 
-    <div class="form-group" ng-class="{'has-error' : form.max_download.$dirty && form.max_download.$invalid}" ng-hide="$parent.unlimited_bandwidth">
+    <div class="form-group" ng-class="{'has-error' : form.max_download.$dirty && form.max_download.$invalid}" ng-hide="unlimited_bandwidth">
       <label>Max Download Speed (kbps):</label>
-      <input class="form-control" type="number" name="max_download" ng-model="$parent.max_download" min="1" required>
+      <input class="form-control" type="number" name="max_download" ng-model="max_download" min="1" required>
       <span class="help-block" ng-if="form.max_download.$error.min">Minimum is 1</span>
     </div>
 
-    <div class="form-group" ng-class="{'has-error' : form.max_upload.$dirty && form.max_upload.$invalid}" ng-hide="$parent.unlimited_bandwidth">
+    <div class="form-group" ng-class="{'has-error' : form.max_upload.$dirty && form.max_upload.$invalid}" ng-hide="unlimited_bandwidth">
       <label>Max Upload Speed (kbps):</label>
-      <input class="form-control" type="number" name="max_upload" ng-model="$parent.max_upload" min="1" required>
+      <input class="form-control" type="number" name="max_upload" ng-model="max_upload" min="1" required>
       <span class="help-block" ng-if="form.max_upload.$error.min">Minimum is 1</span>
     </div>
 
@@ -103,7 +103,7 @@
     <div ng-hide="auto_bill" ng-class="{'has-error' : form.no_expiry.$dirty && form.no_expiry.$invalid}">
       <div class="checkbox">
         <label class="custom-checkbox">
-          <input type="checkbox" name="no_expiry" ng-model="$parent.no_expiration">
+          <input type="checkbox" name="no_expiry" ng-model="no_expiration">
           <span>
             No Expiration
           </span>
@@ -111,14 +111,14 @@
       </div>
     </div>
 
-    <div ng-hide="auto_bill" class="form-group" ng-class="{'has-error' : form.expire_hours.$dirty && form.expire_hours.$invalid}" ng-if="!$parent.no_expiration" ng-init="recomputeExpiration()" >
+    <div ng-hide="auto_bill" class="form-group" ng-class="{'has-error' : form.expire_hours.$dirty && form.expire_hours.$invalid}" ng-if="!no_expiration" ng-init="$parent.recomputeExpiration()" >
       <label>Expiration</label>
       <div class="row">
         <div class="col-md-6">
-          <input class="form-control" type="number" name="expire_hours" min="1" ng-model="opts.expire_hours" ng-change="recomputeExpiration()" required>
+          <input class="form-control" type="number" name="expire_hours" min="1" ng-model="$parent.opts.expire_hours" ng-change="$parent.recomputeExpiration()" required>
         </div>
         <div class="col-md-6">
-          <select class="form-control" ng-model="opts.expiration_unit" ng-change="recomputeExpiration()" ng-options="u for u in opts.expiration_units" required></select>
+          <select class="form-control" ng-model="$parent.opts.expiration_unit" ng-change="$parent.recomputeExpiration()" ng-options="u for u in $parent.opts.expiration_units" required></select>
         </div>
       </div>
       <span class="help-block" ng-show="form.expire_hours.$error.min">Minimum is 1</span>
@@ -127,7 +127,7 @@
 
   <div class="modal-footer">
     <div class="button-group">
-      <button ladda="$parent.submitting" type="submit" ng-click="createClient()" class="btn btn-success" ng-disabled="form.$invalid || form.$pristine">
+      <button ladda="submitting" type="submit" ng-click="createClient()" class="btn btn-success" ng-disabled="form.$invalid || form.$pristine">
         Create
       </button>
       <a class="btn btn-default" ng-click="$close()">Cancel</a>

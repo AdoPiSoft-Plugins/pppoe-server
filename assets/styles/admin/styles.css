@@ -1,3 +1,7 @@
 [heading^=ppp] {
   display: none !important;
 }
+
+.pppoe-clients .top-btns .btn{
+  margin-bottom: 2px;
+}

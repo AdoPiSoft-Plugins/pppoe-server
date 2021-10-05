@@ -27,7 +27,7 @@ async function endIP () {
 }
 
 exports.listAll = async () => {
-  let clients = await dbi.models.PppoeAccount.scope(['default_scope']).findAll({})
+  let clients = await dbi.models.PppoeAccount.scope(['default_scope']).findAll({raw: true})
   return clients || []
 }
 

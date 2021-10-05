@@ -11,7 +11,6 @@ var ini_file;
 
 if (process.env.NODE_ENV == "development"){
   ini_file = process.env.PPPOE_CONFIG_PATH || path.join(process.env.APPDIR, "tmp", "ppp", "pppoe-config.ini")
-  process.env.PPPOE_CLIENTS_PATH = process.env.PPPOE_CLIENTS_PATH || path.join(process.env.APPDIR, "tmp", "ppp", "pppoe-clients.ini")
   process.env.CHAP_PATH = process.env.CHAP_PATH || path.join(process.env.APPDIR, "tmp", "ppp", "chap-secrets")
   process.env.IPADDRESS_POOL = process.env.IPADDRESS_POOL || path.join(process.env.APPDIR, "tmp", "ppp", "ipaddress_pool")
 }else{

@@ -1,9 +1,10 @@
 (function () {
   'use strict'
   var App = angular.module('Plugins')
-  App.controller('PPPOEServerCtrl', function ($scope, PPPOEService, Interfaces, $uibModal, toastr) {
+  App.controller('PPPOEServerCtrl', function ($scope, PPPOEService, Interfaces, $uibModal, toastr, $filter) {
     $scope.loadClients = function () {
       $scope.loading = true
+      $scope.import = {file: null}
       return PPPOEService.clients().then(function (resp) {
         var clients = resp.data || []
         clients.forEach(function (c) {
@@ -75,7 +76,7 @@
             $scope.expiration_date = client.expiration_date
             $scope.no_expiration = !client.expire_minutes && !client.expiration_date
             $scope.is_expired = client.is_expired
-            $scope.auto_bill = client.auto_bill
+            $scope.auto_bill = !!client.auto_bill
             $scope.billing_amount = client.billing_amount
             $scope.billing_phone_number = client.billing_phone_number
             $scope.billing_date = client.billing_date
@@ -94,6 +95,9 @@
               $scope.opts.expiration_unit = 'hours'
               $scope.opts.expire_hours = $scope.expire_minutes > 0 ? $scope.expire_minutes / 60 : 24
             }
+          } else {
+            $scope.username = ''
+            $scope.password = ''
           }
 
           $scope.computeExpMinutes = function () {
@@ -216,5 +220,33 @@
         $scope.fetchingBill = null
       })
     }
+
+    $scope.downloadBackup = function () {
+      var txt = 'Username, Password, IP Address, Max. Download, Max. Upload, Start Time, Expiration, Auto-bill?, Billing Phone Number, Billing Date, Billing Due Date, Billing Amount\r\n'
+      $scope.clients.forEach(function (c, i) {
+        c = Object.assign({}, c)
+        if (i > 0) txt += '\r\n'
+
+        txt += c.username + ','
+        txt += c.password + ','
+        txt += c.ip_address + ','
+        txt += c.max_download + ','
+        txt += c.max_upload + ','
+        txt += (c.started_at || '') + ','
+        txt += $filter('expirationtext')({expire_minutes: c.expire_minutes, expiration_date: c.expiration_date}) + ','
+        txt += (c.auto_bill ? 'Yes' : 'No') + ','
+        txt += (c.billing_phone_number || '') + ','
+        txt += (c.billing_date || '') + ','
+        txt += (c.billing_due_date || '') + ','
+        txt += c.billing_amount || ''
+      })
+      var file_type = 'text/csv;charset=utf-8'
+      var blob = new Blob([txt], {type: file_type})
+      saveAs(blob, 'pppoe-accounts.csv')
+    }
+
+    $scope.$watch('import.file', function (file) {
+      console.log(file)
+    })
   })
 })()

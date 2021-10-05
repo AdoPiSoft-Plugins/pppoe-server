@@ -59,6 +59,9 @@ module.exports = (sequelize, Sequelize) => {
     max_upload: {
       type: Sequelize.INTEGER
     },
+    started_at: {
+      type: Sequelize.DATE
+    },
     created_at: {
       allowNull: false,
       type: Sequelize.DATE

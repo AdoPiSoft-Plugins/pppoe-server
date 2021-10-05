@@ -62,14 +62,15 @@ exports.disconnect = async ({ip, iface, is_expired}) => {
   if (!client) return
 
   if (!is_expired) {
-    await new Promise(r => setTimeout(r, 3e4)) //wait for 30s
-    var is_up = await new Promise(async (r) => {
+    await new Promise(resolve => setTimeout(resolve, 3e4)) //wait for 30s
+    var is_up = await new Promise((resolve) => {
       try {
         var res = ''
-        await cmd('ls /sys/class/net', { onData: (o) => { res += o } })
-        r(res.includes(iface))
+        cmd('ls /sys/class/net', { onData: (o) => { res += o } }).then(() => {
+          resolve(res.includes(iface))
+        })
       } catch (e) {
-        r()
+        resolve()
       }
     })
     if (is_up) return

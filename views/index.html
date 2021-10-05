@@ -33,15 +33,42 @@
       ba-panel-class="with-scroll"
       class="pppoe-clients"
       >
+      <div class="row top-btns">
+        <div class="col-md-6">
+          <button class="btn btn-success btn-sm" ng-click="newClient()">
+            <i class="fa fa-plus">&nbsp;</i>
+            Add Account
+          </button>
 
-      <button class="btn btn-success btn-sm" ng-click="newClient()">
-        <i class="fa fa-plus">&nbsp;</i>
-        Add Account
-      </button>
+          <button ladda="$parent.loading" class="btn btn-warning btn-sm" ng-click="loadClients()">
+            Refresh list
+          </button>
+        </div>
+        <div class="col-md-6 text-right hidden-sm hidden-xs">
+          <button class="btn btn-warning btn-sm" ngf-select ng-show="!import.file" ng-model="import.file" style="margin-right: 5px;">
+            <i class="fa fa-file-csv">&nbsp;</i>
+            Import Backup
+          </button>
+          
+          <button class="btn btn-success btn-sm" ng-click="downloadBackup()">
+            <i class="fa fa-file">&nbsp;</i>
+            Download Backup
+          </button>
+        </div>
 
-      <button ladda="$parent.loading" class="btn btn-warning btn-sm" ng-click="loadClients()">
-        Refresh list
-      </button>
+        <div class="col-md-6 visible-sm visible-xs">
+          <button class="btn btn-warning btn-sm" ngf-select ng-show="!import.file" ng-model="import.file" style="margin-right: 5px;">
+            <i class="fa fa-file-csv">&nbsp;</i>
+            Import Backup
+          </button>
+          
+          <button class="btn btn-success btn-sm" ng-click="downloadBackup()">
+            <i class="fa fa-file">&nbsp;</i>
+            Download Backup
+          </button>
+        </div>
+      </div>
+
       <p></p>
 
       <div class="scrollable-x">
