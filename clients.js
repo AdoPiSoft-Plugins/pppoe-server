@@ -35,7 +35,9 @@ exports.updateChapSecrets = async () => {
   var clients = await exports.listAll()
   var txt = ''
   clients.forEach(c => {
-    var is_valid = (c.expiration_date instanceof (Date)) ? c.expiration_date.getTime() > new Date().getTime() : c.expire_minutes > 0
+    console.log(c)
+    let exp_date = !c.expiration_date ? null : (c.expiration_date instanceof (Date)) ? c.expiration_date : new Date(c.expiration_date)
+    let is_valid = (exp_date instanceof (Date)) ? exp_date.getTime() > new Date().getTime() : c.expire_minutes > 0
     is_valid = is_valid || (!c.expire_minutes && !c.expiration_date) // no expiration
     if (is_valid) {
       // eslint-disable-next-line no-tabs

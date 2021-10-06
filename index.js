@@ -50,15 +50,15 @@ module.exports = {
   async backup (backup_dir, plugin_name) {
     console.log('Backing up: ', plugin_name)
     try {
+      await fs.promises.mkdir(path.join(backup_dir, 'plugins', plugin_name), { recursive: true }).catch(console.error)
+      var config_dest_ini = path.join(backup_dir, 'plugins', plugin_name, 'pppoe-config.ini')
+      if (await fs.pathExists(config_ini_path)) {
+        await fs.copy(config_ini_path, config_dest_ini)
+      }
       var clients_dest_json = path.join(backup_dir, 'plugins', plugin_name, 'pppoe-clients.json')
       var list = await clients.listAll()
       if (list.length) {
         await fs.promises.writeFile(clients_dest_json, JSON.stringify(list))
-      }
-
-      var config_dest_ini = path.join(backup_dir, 'plugins', plugin_name, 'pppoe-config.ini')
-      if (await fs.pathExists(config_ini_path)) {
-        await fs.copy(config_ini_path, config_dest_ini)
       }
     } catch (e) {
       console.log(e)

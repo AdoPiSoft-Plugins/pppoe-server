@@ -1,6 +1,9 @@
 (function () {
   'use strict'
   var App = angular.module('Plugins')
+  function safeApply(scope) {
+    (scope.$$phase || scope.$root.$$phase) ? null : scope.$apply()
+  }
   App.controller('PPPOEServerCtrl', function ($scope, Translator, PPPOEService, Interfaces, $uibModal, toastr, $filter, Upload, $ngConfirm) {
     $scope.loadClients = function () {
       $scope.loading = true
@@ -14,7 +17,7 @@
           c.billing_amount = parseInt(c.billing_amount)
           c.billing_date = parseInt(c.billing_date)
           c.billing_due_date = parseInt(c.billing_due_date)
-
+          if (c.started_at) c.started_at = new Date(c.started_at)
           if (c.expiration_date && !c.expire_minutes) {
             c.expiration_date = new Date(c.expiration_date)
             c.is_expired = c.expiration_date.getTime() <= new Date().getTime()
@@ -257,7 +260,7 @@
               keys: ['enter'],
               text: 'Import',
               btnClass: 'btn-warning',
-              action: async () => {
+              action: function () {
                 Upload.upload({
                   url: '/pppoe-server/import',
                   data: {file: file}
@@ -273,8 +276,11 @@
                     title: 'Import Successful',
                     content: content,
                     type: 'success',
-                    autoClose: 'cancel|4000',
-                    backgroundDismiss: true
+                    autoClose: 'cancel|2000',
+                    backgroundDismiss: true,
+                    buttons: {
+                      cancel: {text: 'Ok'}
+                    }
                   })
                 }).catch(function () {
                   $ngConfirm({
@@ -282,14 +288,25 @@
                     title: 'Import Failed',
                     content: 'System encounters error while importing data from csv file.',
                     type: 'red',
-                    autoClose: 'cancel|4000',
-                    backgroundDismiss: true
+                    autoClose: 'cancel|3000',
+                    backgroundDismiss: true,
+                    buttons: {
+                      cancel: function() {}
+                    }
                   })
+                }).finally(function() {
+                  $scope.loadClients()
+                  $scope.import.file = null
+                  safeApply($scope)
                 })
               }
             },
             cancel: {
-              text: Translator.print('cancel')
+              text: Translator.print('cancel'),
+              action: function() {
+                $scope.import.file = null
+                safeApply($scope)
+              }
             }
           }
         })
