@@ -45,7 +45,7 @@
           </button>
         </div>
         <div class="col-md-6 text-right hidden-sm hidden-xs">
-          <button class="btn btn-warning btn-sm" ngf-select ng-show="!import.file" ng-model="import.file" style="margin-right: 5px;">
+          <button class="btn btn-warning btn-sm" ngf-select ngf-pattern="'.csv'" accept=".csv" ng-show="!import.file" ng-model="import.file" style="margin-right: 5px;">
             <i class="fa fa-file-csv">&nbsp;</i>
             Import Backup
           </button>

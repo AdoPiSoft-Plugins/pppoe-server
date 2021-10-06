@@ -1,7 +1,7 @@
 (function () {
   'use strict'
   var App = angular.module('Plugins')
-  App.controller('PPPOEServerCtrl', function ($scope, PPPOEService, Interfaces, $uibModal, toastr, $filter) {
+  App.controller('PPPOEServerCtrl', function ($scope, Translator, PPPOEService, Interfaces, $uibModal, toastr, $filter, Upload, $ngConfirm) {
     $scope.loadClients = function () {
       $scope.loading = true
       $scope.import = {file: null}
@@ -246,7 +246,54 @@
     }
 
     $scope.$watch('import.file', function (file) {
-      console.log(file)
+      if (file) {
+        $ngConfirm({
+          title: 'Confirm Action',
+          content: 'Are you sure you want to import PPPOE accounts from CSV?',
+          type: 'warning',
+          escapeKey: 'cancel',
+          buttons: {
+            ok: {
+              keys: ['enter'],
+              text: 'Import',
+              btnClass: 'btn-warning',
+              action: async () => {
+                Upload.upload({
+                  url: '/pppoe-server/import',
+                  data: {file: file}
+                }).then(function (res) {
+                  var data = res.data || {count: 0, skipped: 0}
+                  var count = data.count
+                  var skipped = data.skipped
+                  var content = count + ' PPPOE Accounts successfully imported from csv file.'
+                  if (skipped > 0) {
+                    content += ' ' + skipped + ' skipped'
+                  }
+                  $ngConfirm({
+                    title: 'Import Successful',
+                    content: content,
+                    type: 'success',
+                    autoClose: 'cancel|4000',
+                    backgroundDismiss: true
+                  })
+                }).catch(function () {
+                  $ngConfirm({
+                    icon: 'fa fa-exclamation-triangle',
+                    title: 'Import Failed',
+                    content: 'System encounters error while importing data from csv file.',
+                    type: 'red',
+                    autoClose: 'cancel|4000',
+                    backgroundDismiss: true
+                  })
+                })
+              }
+            },
+            cancel: {
+              text: Translator.print('cancel')
+            }
+          }
+        })
+      }
     })
   })
 })()
