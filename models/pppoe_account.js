@@ -32,6 +32,9 @@ module.exports = (sequelize, Sequelize) => {
     iface: {
       type: Sequelize.STRING
     },
+    status: {
+      type: Sequelize.STRING
+    },
     billing_phone_number: {
       type: Sequelize.STRING
     },

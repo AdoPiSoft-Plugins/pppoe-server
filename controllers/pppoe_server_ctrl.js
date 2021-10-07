@@ -92,7 +92,7 @@ exports.updateBill = async (req, res, next) => {
   try {
     let { id } = req.params
     let client = await dbi.models.PppoeAccount.findByPk(id)
-    await subscriptions.generateBill(client)
+    await subscriptions.generateBill(client.get({plain: true}))
     res.json({success: true})
   } catch (e) {
     next(e)

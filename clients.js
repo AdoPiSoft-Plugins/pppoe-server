@@ -35,9 +35,8 @@ exports.updateChapSecrets = async () => {
   var clients = await exports.listAll()
   var txt = ''
   clients.forEach(c => {
-    console.log(c)
-    let exp_date = !c.expiration_date ? null : (c.expiration_date instanceof (Date)) ? c.expiration_date : new Date(c.expiration_date)
-    let is_valid = (exp_date instanceof (Date)) ? exp_date.getTime() > new Date().getTime() : c.expire_minutes > 0
+    let exp_date = c.expiration_date ? new Date(c.expiration_date) : null
+    var is_valid = (exp_date instanceof (Date)) && exp_date.getTime() > new Date().getTime()
     is_valid = is_valid || (!c.expire_minutes && !c.expiration_date) // no expiration
     if (is_valid) {
       // eslint-disable-next-line no-tabs
@@ -120,7 +119,7 @@ exports.updateClient = async (id, cfg) => {
   var conflict = await dbi.models.PppoeAccount.scope(['default_scope']).findOne({where: {username: cfg.username, id: {[Op.not]: id}}})
   if (conflict) throw new Error('Username already exists')
 
-  if (cfg.auto_bill) {
+  if (cfg.auto_bill && !cfg.expiration_date) {
     var exp_date = cfg.expiration_date ? new Date(cfg.expiration_date) : new Date()
     if (isNaN(exp_date.getTime())) exp_date = new Date()
 
@@ -131,6 +130,7 @@ exports.updateClient = async (id, cfg) => {
     cfg.expiration_date = exp_date
     cfg.expire_minutes = 0
   }
+  console.log("CLIENT:", cfg)
   await dbi.models.PppoeAccount.update(cfg, {where: {id: id}})
   await exports.updateChapSecrets()
   return exports.listAll()

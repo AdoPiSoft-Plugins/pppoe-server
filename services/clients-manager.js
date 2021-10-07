@@ -17,7 +17,8 @@ exports.init = async () => {
     var list = await clients.listAll()
     await promiseSeries(list.map(client => {
       return async () => {
-        var is_valid = (client.expiration_date instanceof (Date)) && client.expiration_date.getTime() > new Date().getTime()
+        let exp_date = client.expiration_date ? new Date(client.expiration_date) : null
+        var is_valid = (exp_date instanceof (Date)) && exp_date.getTime() > new Date().getTime()
         is_valid = is_valid || (!client.expiration_date && !client.expire_minutes)
         if (!is_valid) {
           await exports.disconnect({ip: client.ip_address, iface: client.iface, is_expired: true})
@@ -38,7 +39,7 @@ exports.init = async () => {
 }
 
 exports.connect = async ({ip, iface}) => {
-  var client = await dbi.models.PppoeAccount.findOne({where: {ip_address: ip}})
+  var client = await dbi.models.PppoeAccount.scope(['default_scope']).findOne({where: {ip_address: ip}, raw: true})
   if (!client) return exports.disconnect({ip, iface})
   client.status = CONNECTED
   client.iface = iface
@@ -46,7 +47,8 @@ exports.connect = async ({ip, iface}) => {
     client.expiration_date = new Date(new Date().getTime() + client.expire_minutes * 60000)
     client.expire_minutes = 0
   } else {
-    var is_valid = (client.expiration_date instanceof (Date)) && client.expiration_date.getTime() > new Date().getTime()
+    let exp_date = client.expiration_date ? new Date(client.expiration_date) : null
+    var is_valid = (exp_date instanceof (Date)) && exp_date.getTime() > new Date().getTime()
     is_valid = is_valid || (!client.expiration_date && !client.expire_minutes) // no exp
     if (!is_valid) { return exports.disconnect({ip, iface, is_expired: true}) }
   }
@@ -58,7 +60,7 @@ exports.connect = async ({ip, iface}) => {
 }
 
 exports.disconnect = async ({ip, iface, is_expired}) => {
-  var client = await dbi.models.PppoeAccount.findOne({where: {ip_address: ip}})
+  var client = await dbi.models.PppoeAccount.findOne({where: {ip_address: ip}, raw: true})
   if (!client) return
 
   if (!is_expired) {
