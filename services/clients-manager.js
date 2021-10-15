@@ -19,6 +19,7 @@ exports.init = async () => {
       return async () => {
         let exp_date = client.expiration_date ? new Date(client.expiration_date) : null
         var is_valid = (exp_date instanceof (Date)) && exp_date.getTime() > new Date().getTime()
+        is_valid = is_valid || (!client.expiration_date && client.expire_minutes > 0)
         is_valid = is_valid || (!client.expiration_date && !client.expire_minutes)
         if (!is_valid) {
           await exports.disconnect({ip: client.ip_address, iface: client.iface, is_expired: true})
