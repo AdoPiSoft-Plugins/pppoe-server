@@ -37,7 +37,7 @@ exports.updateChapSecrets = async () => {
   clients.forEach(c => {
     let exp_date = c.expiration_date ? new Date(c.expiration_date) : null
     var is_valid = (exp_date instanceof (Date)) && exp_date.getTime() > new Date().getTime()
-    is_valid = is_valid || (!client.expiration_date && client.expire_minutes > 0)
+    is_valid = is_valid || (!c.expiration_date && c.expire_minutes > 0)
     is_valid = is_valid || (!c.expire_minutes && !c.expiration_date) // no expiration
     if (is_valid) {
       // eslint-disable-next-line no-tabs
