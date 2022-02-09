@@ -12,7 +12,7 @@
         {
           "parentstate": "plugins",
           "icon": "fa fa-server",
-          "text": "PPPOE Server",
+          "text": "PPPoE Server",
           "href": "plugins.pppoe_server"
         }
       ]

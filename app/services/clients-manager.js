@@ -12,7 +12,7 @@ exports.init = async() => {
   setInterval(async() => {
     var ppp_ifaces = "";
     try {
-      await cmd(`${path.join(__dirname,"..","scripts","list-ppp.sh")}`, {
+      await cmd(`${path.join(__dirname,"/../../","scripts","list-ppp.sh")}`, {
         onData: o => {
           ppp_ifaces += o
         }
@@ -87,7 +87,7 @@ exports.connect = async({
     wan_iface
   } = await config.read();
   await clients.updateClient(client.id, client);
-  await cmd(`${path.join(__dirname,"..","scripts","connect.sh")} ${iface} ${wan_iface} ${client.max_download||0} ${client.max_upload||0}`).catch(console.log)
+  await cmd(`${path.join(__dirname,"/../../","scripts","connect.sh")} ${iface} ${wan_iface} ${client.max_download||0} ${client.max_upload||0}`).catch(console.log)
 };
 exports.disconnect = async({
   ip,
@@ -125,7 +125,7 @@ exports.disconnect = async({
     wan_iface
   } = await config.read();
   if (client.iface) {
-    await cmd(`${path.join(__dirname,"..","scripts","disconnect.sh")} ${iface} ${wan_iface}`).catch(console.log)
+    await cmd(`${path.join(__dirname,"/../../","scripts","disconnect.sh")} ${iface} ${wan_iface}`).catch(console.log)
   }
   client.iface = null;
   await clients.updateClient(client.id, client)

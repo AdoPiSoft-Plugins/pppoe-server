@@ -14,7 +14,7 @@ if (process.env.NODE_ENV == "development") {
   process.env.CHAP_PATH = process.env.CHAP_PATH || path.join(__dirname,'..', "tmp", "ppp", "chap-secrets");
   process.env.IPADDRESS_POOL = process.env.IPADDRESS_POOL || path.join(__dirname,'..', "tmp", "ppp", "ipaddress_pool")
 } else {
-  ini_file = process.env.PPPOE_CONFIG_PATH || path.join("/etc", "ppp", "pppoe-config.ini")
+  ini_file = process.env.PPPOE_CONFIG_PATH || path.join(__dirname, '..', "/etc", "ppp", "pppoe-config.ini")
 }
 var mode = 438;
 exports.server_started = false;
