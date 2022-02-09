@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if [ $NODE_ENV = "development" ]; then
-  PPP_PATH=$APPDIR/tmp/ppp
-  ROOTPATH=$APPDIR/node_modules/pppoe-server
+  PPP_PATH=$APPDIR/release/@adopisoft/plugins/pppoe-server/tmp/ppp
+  ROOTPATH=$APPDIR/release/@adopisoft/plugins/pppoe-server/
 
   mkdir $PPP_PATH || true
   cp -rf $ROOTPATH/etc/ppp/* $PPP_PATH/
 else
-  ROOTPATH=$APPDIR/node_modules/pppoe-server
+  ROOTPATH=$APPDIR/release/@adopisoft/plugins/pppoe-server/
   sudo apt-get install ppp -y
   PPP_PATH=/etc/ppp
   chmod a+x $ROOTPATH/scripts/*.sh

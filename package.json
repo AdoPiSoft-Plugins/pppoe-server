@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "python $APPDIR/python-scripts/plugin-postinstall.py $(basename $(pwd)) $(pwd)"
-  },
-  "author": "",
+  "repository": "git@github.com:AdoPiSoft-Plugins/pppoe-server.git",
+  "author": "arnel lenteria",
   "license": "ISC",
+  "metadata": {
+    "admin": {
+      "navigation": [
+        {
+          "parentstate": "plugins",
+          "icon": "fa fa-server",
+          "text": "PPPOE Server",
+          "href": "plugins.pppoe_server"
+        }
+      ]
+    }
+  },
   "dependencies": {
     "csvtojson": "^2.0.10",
     "fs-extra": "^10.0.0",
