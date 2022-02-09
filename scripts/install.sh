@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $NODE_ENV = "development" ]; then
-  PPP_PATH=$APPDIR/release/@adopisoft/plugins/pppoe-server/tmp/ppp
+  PPP_PATH=$APPDIR/tmp/ppp
   ROOTPATH=$APPDIR/release/@adopisoft/plugins/pppoe-server/
 
   mkdir $PPP_PATH || true
