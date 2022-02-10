@@ -85,7 +85,8 @@ exports.createClient = async cfg => {
   if (cfg.auto_bill) {
     var exp_date = new Date;
     exp_date.setDate(cfg.billing_due_date);
-    if (exp_date <= new Date) {
+    var ref_date = (new Date()).setDate((new Date).getDate() + 25)
+    if (exp_date <= ref_date) {
       exp_date.setMonth(exp_date.getMonth() + 1)
     }
     cfg.expiration_date = exp_date;
@@ -130,7 +131,8 @@ exports.updateClient = async(id, cfg) => {
     var exp_date = cfg.expiration_date ? new Date(cfg.expiration_date) : new Date;
     if (isNaN(exp_date.getTime())) exp_date = new Date;
     exp_date.setDate(cfg.billing_due_date);
-    if (exp_date <= new Date) {
+    var ref_date = (new Date()).setDate((new Date).getDate() + 25)
+    if (exp_date <= ref_date) {
       exp_date.setMonth(exp_date.getMonth() + 1)
     }
     cfg.expiration_date = exp_date;
