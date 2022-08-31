@@ -24,10 +24,18 @@ async function endIP() {
   end_ip = regx[1].replace(/\d+$/, regx[2]);
   return start_ip
 }
-exports.listAll = async() => {
+exports.listAll = async(query) => {
+  query = query || {}
+  const order = []
+  if(Object.keys(query).length !== 0){
+    for(var k in query){
+      order.push([k, query[k]])
+    }
+  }
   const dbi = await db.getInstance()
   let clients = await dbi.models.PppoeAccount.scope(["default_scope"]).findAll({
-    raw: true
+    raw: true,
+    order
   });
   return clients || []
 };

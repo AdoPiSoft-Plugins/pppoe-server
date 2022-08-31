@@ -17,8 +17,9 @@ exports.checkPaymentStatus = async s => {
   return s
 };
 exports.clients = async(req, res, next) => {
+  const { query } = req
   try {
-    let list = await clients.listAll();
+    let list = await clients.listAll(query);
     await promiseSeries(list.map(c => {
       return async() => {
         await exports.checkPaymentStatus(c)

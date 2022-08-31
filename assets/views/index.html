@@ -74,14 +74,38 @@
       <div class="scrollable-x">
         <table class="table table-bordered">
           <thead>
-            <th>Username</th>
+            <th>Username
+              <a href="javascript:void(0)" ng-click="toggleSort('username')">
+                <i ng-show="!sort.username" class="fa fa-arrow-up sort-inactive" title="Sorting disabled"></i>
+                <i ng-show="sort.username === 'asc'" class="fa fa-arrow-up" title="Ascending"></i>
+                <i ng-show="sort.username === 'desc'" class="fa fa-arrow-down" title="Descending"></i>
+              </a>
+            </th>
             <th>Password</th>
-            <th>IP Address</th>
+            <th>IP Address
+              <a href="javascript:void(0)" ng-click="toggleSort('ip_address')">
+                <i ng-show="!sort.ip_address" class="fa fa-arrow-up sort-inactive" title="Sorting disabled"></i>
+                <i ng-show="sort.ip_address === 'asc'" class="fa fa-arrow-up" title="Ascending"></i>
+                <i ng-show="sort.ip_address === 'desc'" class="fa fa-arrow-down" title="Descending"></i>
+              </a>
+            </th>
             <th>Max Download</th>
             <th>Max Upload</th>
-            <th>Status</th>
+            <th>Status
+              <a href="javascript:void(0)" ng-click="toggleSort('status')">
+                <i ng-show="!sort.status" class="fa fa-arrow-up sort-inactive" title="Sorting disabled"></i>
+                <i ng-show="sort.status === 'asc'" class="fa fa-arrow-up" title="Ascending"></i>
+                <i ng-show="sort.status === 'desc'" class="fa fa-arrow-down" title="Descending"></i>
+              </a>
+            </th>
             <!-- <th>Data Usage</th> -->
-            <th>Start Time</th>
+            <th>Start Time
+              <a href="javascript:void(0)" ng-click="toggleSort('started_at')">
+                <i ng-show="!sort.started_at" class="fa fa-arrow-up sort-inactive" title="Sorting disabled"></i>
+                <i ng-show="sort.started_at === 'asc'" class="fa fa-arrow-up" title="Ascending"></i>
+                <i ng-show="sort.started_at === 'desc'" class="fa fa-arrow-down" title="Descending"></i>
+              </a>
+            </th>
             <th>Expiration</th>
             <th></th>
           </thead>
